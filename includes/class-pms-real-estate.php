@@ -44,6 +44,7 @@ CREATE TABLE {$t('properties')} (
  property_type_id BIGINT UNSIGNED NULL,
  location_id BIGINT UNSIGNED NULL,
  owner_id BIGINT UNSIGNED NULL,
+ featured_image_id BIGINT UNSIGNED NULL,
  bedrooms INT NOT NULL DEFAULT 0,
  bathrooms INT NOT NULL DEFAULT 0,
  area DECIMAL(14,2) NOT NULL DEFAULT 0,
@@ -52,7 +53,7 @@ CREATE TABLE {$t('properties')} (
  description TEXT NULL,
  created_at DATETIME NULL,
  updated_at DATETIME NULL,
- PRIMARY KEY (id), UNIQUE KEY property_code (property_code), KEY property_type_id (property_type_id), KEY location_id (location_id), KEY owner_id (owner_id), KEY status (status)
+ PRIMARY KEY (id), UNIQUE KEY property_code (property_code), KEY property_type_id (property_type_id), KEY location_id (location_id), KEY owner_id (owner_id), KEY featured_image_id (featured_image_id), KEY status (status)
 ) {$c};
 CREATE TABLE {$t('listings')} (
  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -259,7 +260,7 @@ CREATE TABLE {$t('commissions')} (
             'property_types'=>['name','description','status'],
             'locations'=>['name','address','city','state','country','status'],
             'owners'=>['name','email','phone','address','notes','status'],
-            'properties'=>['property_code','title','property_type_id','location_id','owner_id','bedrooms','bathrooms','area','area_unit','status','description'],
+            'properties'=>['property_code','title','property_type_id','location_id','owner_id','featured_image_id','bedrooms','bathrooms','area','area_unit','status','description'],
             'listings'=>['property_id','listing_type','price','currency','agent_id','status','listed_at','notes'],
             'buyers'=>['name','email','phone','budget','currency','agent_id','status','notes'],
             'tenants'=>['name','email','phone','agent_id','status','notes'],
@@ -287,6 +288,24 @@ CREATE TABLE {$t('commissions')} (
         if (in_array($type,['properties'],true)) { $row['created_at']=$now; $row['updated_at']=$now; }
         $wpdb->insert(self::table($type),$row);
         return (int)$wpdb->insert_id;
+    }
+
+    /**
+     * Send a plain-text ERP communication email through WordPress's mail transport.
+     * The actual delivery transport is controlled by the WordPress hosting/mail configuration.
+     */
+    public static function send_email(string $to, string $subject, string $message): bool
+    {
+        $to = sanitize_email($to);
+        $subject = sanitize_text_field($subject);
+        $message = wp_strip_all_tags($message);
+        if (! $to || ! is_email($to) || $subject === '' || trim($message) === '') return false;
+
+        $from_email = sanitize_email(get_option('admin_email'));
+        $from_name = sanitize_text_field(get_bloginfo('name'));
+        $headers = [];
+        if ($from_email && is_email($from_email)) $headers[] = 'From: ' . $from_name . ' <' . $from_email . '>';
+        return (bool) wp_mail($to, $subject, $message, $headers);
     }
 
     public static function delete(string $type,int $id): void

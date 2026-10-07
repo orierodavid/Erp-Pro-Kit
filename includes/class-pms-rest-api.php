@@ -26,7 +26,7 @@ class PMS_REST_API
         register_rest_route(self::NAMESPACE, '/attendance/status', [
             'methods' => 'GET',
             'callback' => [$this, 'attendance_status'],
-            'permission_callback' => fn () => current_user_can('pms_clock_in_out'),
+            'permission_callback' => fn () => PMS_Modules::is_active('attendance') && current_user_can('pms_clock_in_out'),
         ]);
 
         register_rest_route(self::NAMESPACE, '/attendance/clock-in', [

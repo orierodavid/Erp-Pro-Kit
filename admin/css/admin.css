@@ -1146,3 +1146,41 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
 .pms-settings-time-range label { display:flex; flex-direction:column; gap:6px; color:var(--pms-muted); font-size:11px; font-weight:700; }
 .pms-settings-time-range input[type="time"] { width:150px; }
 @media (max-width: 782px) { .pms-settings-time-range input[type="time"] { width:100%; } }
+
+/* ===========================================================
+   Real Estate workspace
+   =========================================================== */
+.pms-real-estate-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 20px;padding:6px;background:#fff;border:1px solid #E2E8F0;border-radius:14px;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.pms-real-estate-tabs a{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border-radius:10px;color:#475569;text-decoration:none;font-size:12px;font-weight:700}
+.pms-real-estate-tabs a:hover{background:#F8FAFC;color:#1D4ED8}
+.pms-real-estate-tabs a.is-active{background:#2563EB;color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.2)}
+.pms-real-estate-tabs .dashicons{font-size:16px;width:16px;height:16px}
+.pms-real-estate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.pms-real-estate-mini-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;padding-top:14px;border-top:1px solid #E2E8F0}
+.pms-real-estate-mini-list span{padding:5px 9px;border-radius:999px;background:#F1F5F9;color:#475569;font-size:11px;font-weight:700}
+.pms-real-estate-mini-list em{color:#94A3B8;font-size:11px}
+.pms-real-estate .pms-panel h2{margin-top:0}
+@media(max-width:900px){.pms-real-estate-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.pms-real-estate-tabs{overflow:auto;flex-wrap:nowrap}.pms-real-estate-tabs a{white-space:nowrap}}
+
+/* Real Estate media, listings and communications */
+.pms-re-image-picker{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pms-re-image-preview{width:180px;height:110px;border:1px dashed #CBD5E1;border-radius:12px;background:#F8FAFC;color:#94A3B8;display:flex;align-items:center;justify-content:center;gap:7px;overflow:hidden;font-size:11px;font-weight:700}
+.pms-re-image-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.pms-re-table-thumb{width:54px;height:42px;object-fit:cover;border-radius:8px;display:block}
+.pms-re-table-placeholder{width:54px;height:42px;border-radius:8px;background:#F1F5F9;color:#94A3B8;display:grid;place-items:center}
+.pms-re-listing-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.pms-re-listing-card{overflow:hidden;border:1px solid #E2E8F0;border-radius:14px;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.pms-re-listing-image{position:relative;height:190px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;color:#94A3B8;overflow:hidden}
+.pms-re-listing-image img{width:100%;height:100%;object-fit:cover;display:block}
+.pms-re-listing-type{position:absolute;top:12px;left:12px;padding:5px 9px;border-radius:999px;background:rgba(15,23,42,.78);color:#fff;font-size:10px;font-weight:800}
+.pms-re-listing-body{padding:15px}
+.pms-re-listing-code{color:#94A3B8;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.pms-re-listing-body h3{margin:4px 0 10px;color:#0F172A;font-size:15px;font-weight:800}
+.pms-re-listing-price{display:block;color:#2563EB;font-size:18px;font-weight:900;line-height:1.25}
+.pms-re-listing-meta{display:flex;justify-content:space-between;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid #F1F5F9;color:#64748B;font-size:10px;font-weight:700}
+.pms-re-email-check{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #E2E8F0;border-radius:12px;background:#F8FAFC;margin-bottom:16px}
+.pms-re-email-check>.dashicons{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:#EFF6FF;color:#2563EB;font-size:20px}
+.pms-re-email-check strong{display:block;color:#0F172A;font-size:13px}
+.pms-re-email-check p{margin:3px 0 0;color:#64748B;font-size:12px}
+@media(max-width:760px){.pms-re-listing-grid{grid-template-columns:1fr}.pms-re-listing-image{height:210px}.pms-re-image-preview{width:100%;height:150px}}

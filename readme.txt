@@ -1,6 +1,6 @@
-=== Project Management System ===
+=== ERP Pro Kit ===
 Contributors: orierodavid
-Tags: task management, attendance, project management
+Tags: ERP, business management, WordPress, invoicing, inventory, CRM
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
@@ -8,19 +8,19 @@ Stable tag: 0.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Task management with per-task location verification and punctuality tracking — built for teams with no fixed office, native to WordPress.
+ERP Pro Kit is a clean, bold business management workspace built as a native WordPress application. It brings operations, people, tasks, attendance, CRM, invoicing, expenses, inventory and real estate into one frontend-style ERP workspace.
 
 == Description ==
 
-This is a starter skeleton, not a finished product:
+ERP Pro Kit is designed as a cohesive WordPress application rather than a collection of disconnected admin pages:
 
 * Every task carries its own Work mode — Remote (time tracked, no location check) or Location based (GPS-verified against a geocoded address before it can start)
 * Free address verification via OpenStreetMap, cached to stay within their usage policy
 * Punctuality (Early/Late) computed per task against its own scheduled time, or a company-wide default from Settings
 * Two roles — PMS Admin and PMS Staff — with granular capabilities; your existing Administrator account automatically gets full access too
-* A full-screen custom app shell in wp-admin (WordPress's own menu/toolbar are hidden on PMS pages, replaced with a branded sidebar + topbar, with a "Back to WP Dashboard" link)
+* A full-screen custom app shell in wp-admin (WordPress's own menu/toolbar are hidden on ERP pages, replaced with a branded sidebar + topbar, with a "Back to WP Dashboard" link)
 * Full CRUD for Tasks, Branches, and Departments, with file attachments and a two-way notes thread on every task
-* A real Settings page (WP Settings API) — company name, brand color (color picker), default geofence radius, default start time, late-grace period
+* A real Settings page (WP Settings API) — company name, logo, primary and secondary brand colors, company/billing details, banking details, default geofence radius, default start time and late-grace period
 * Reports and CSV export filterable by department, work mode, and early/late
 * Two frontend shortcodes so Staff never need wp-admin access at all:
   - [pms_login] — a branded login form
@@ -31,7 +31,7 @@ This is a starter skeleton, not a finished product:
 1. Upload the `project-management-system` folder to `/wp-content/plugins/`
 2. Activate through the "Plugins" menu — this creates the database tables, the two roles, and grants your Administrator account full access
 3. Go to Users → assign a user the "PMS Admin" or "PMS Staff" role
-4. Go to the new "Project Mgmt" menu → Settings, to set your company name and brand color
+4. Go to the new ERP Pro Kit menu → Settings, to set your company name and brand color
 5. Optionally create a front-end page with [pms_dashboard] on it, so Staff can use the app without ever touching wp-admin
 
 == Changelog ==

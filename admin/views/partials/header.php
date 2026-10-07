@@ -138,9 +138,9 @@ foreach ($pms_page_titles as $item) {
 
             <div class="pms-topbar-spacer"></div>
 
-            <div class="pms-workspace-pill pms-workspace-pill-staff" aria-label="<?php esc_attr_e('Staff Workspace', 'pms'); ?>">
-                <span class="dashicons dashicons-groups"></span>
-                <span><?php esc_html_e('Staff Workspace', 'pms'); ?></span>
+            <div class="pms-workspace-pill <?php echo $pms_is_admin ? 'pms-workspace-pill-admin' : 'pms-workspace-pill-staff'; ?>" aria-label="<?php echo esc_attr($pms_is_admin ? __('Admin Workspace', 'pms') : __('Staff Workspace', 'pms')); ?>">
+                <span class="dashicons <?php echo esc_attr($pms_is_admin ? 'dashicons-shield' : 'dashicons-groups'); ?>"></span>
+                <span><?php echo esc_html($pms_is_admin ? __('Admin Workspace', 'pms') : __('Staff Workspace', 'pms')); ?></span>
             </div>
 
             <div class="pms-topbar-notification" aria-hidden="true">

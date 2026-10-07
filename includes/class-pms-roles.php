@@ -26,7 +26,7 @@ class PMS_Roles
             ],
             'pms_accountant' => [
                 'label' => __('Accountant', 'pms'),
-                'caps' => ['pms_manage_payroll', 'pms_manage_invoices', 'pms_manage_expenses', 'pms_view_reports'],
+                'caps' => ['pms_manage_payroll', 'pms_manage_invoices', 'pms_manage_expenses', 'pms_submit_expenses', 'pms_view_reports'],
             ],
             'pms_property_manager' => [
                 'label' => __('Property Manager', 'pms'),

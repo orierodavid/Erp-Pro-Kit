@@ -79,7 +79,7 @@ class PMS_Settings
         add_settings_section('pms_general', __('General', 'pms'), '__return_false', 'pms-settings');
 
         add_settings_field('pms_default_geofence_radius_m', __('Default task geofence radius (metres)', 'pms'), [$this, 'field_geofence_radius'], 'pms-settings', 'pms_general');
-        add_settings_field('pms_workday_hours', __('Default start time', 'pms'), [$this, 'field_workday_hours'], 'pms-settings', 'pms_general');
+        add_settings_field('pms_workday_hours', __('Workday hours', 'pms'), [$this, 'field_workday_hours'], 'pms-settings', 'pms_general');
         add_settings_field('pms_late_grace_minutes', __('Late after', 'pms'), [$this, 'field_late_grace'], 'pms-settings', 'pms_general');
 
         add_settings_section('pms_modules', __('ERP Modules', 'pms'), function () { echo '<p class="description">' . esc_html__('Activate company-wide modules here. Employee access is controlled separately by roles and capabilities.', 'pms') . '</p>'; }, 'pms-settings');
@@ -127,11 +127,21 @@ class PMS_Settings
 
     public function field_workday_hours(): void
     {
+        echo '<div class="pms-settings-time-range">';
+        echo '<label><span>' . esc_html__('Start', 'pms') . '</span>';
         printf(
             '<input type="time" name="pms_workday_start" value="%s">',
             esc_attr(get_option('pms_workday_start', '09:00'))
         );
-        echo '<p class="description">' . esc_html__('Used as the expected start time for any task that doesn\'t set its own scheduled start time.', 'pms') . '</p>';
+        echo '</label>';
+        echo '<label><span>' . esc_html__('End', 'pms') . '</span>';
+        printf(
+            '<input type="time" name="pms_workday_end" value="%s">',
+            esc_attr(get_option('pms_workday_end', '17:00'))
+        );
+        echo '</label>';
+        echo '</div>';
+        echo '<p class="description">' . esc_html__('Used as the default working window for task scheduling when a task does not set its own schedule.', 'pms') . '</p>';
     }
 
     public function field_late_grace(): void

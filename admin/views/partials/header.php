@@ -23,7 +23,7 @@ $pms_nav_items = [
     ['slug' => 'pms-dashboard', 'label' => __('Dashboard', 'pms'), 'icon' => 'dashicons-grid-view', 'cap' => 'read'],
     ['slug' => 'pms-my-tasks', 'label' => __('My Tasks', 'pms'), 'icon' => 'dashicons-yes-alt', 'cap' => 'pms_view_assigned_tasks', 'module' => 'tasks'],
     ['slug' => 'pms-tasks', 'label' => __('Tasks', 'pms'), 'icon' => 'dashicons-list-view', 'cap' => 'pms_manage_tasks', 'module' => 'tasks'],
-    ['slug' => 'pms-attendance', 'label' => __('Attendance', 'pms'), 'icon' => 'dashicons-clock', 'cap' => 'pms_view_attendance', 'module' => 'attendance'],
+    ['slug' => 'pms-attendance', 'label' => __('Attendance', 'pms'), 'icon' => 'dashicons-clock', 'cap' => 'pms_clock_in_out', 'module' => 'attendance'],
     ['slug' => 'pms-my-account', 'label' => __('My Profile', 'pms'), 'icon' => 'dashicons-admin-users', 'cap' => 'read'],
 ];
 

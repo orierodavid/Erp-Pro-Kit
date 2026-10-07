@@ -40,8 +40,14 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
     <a href="<?php echo esc_url(admin_url('admin.php?page=pms-roles')); ?>"><?php esc_html_e('Roles & Permissions →', 'pms'); ?></a>
 </p>
 
+<div class="pms-toolbar pms-panel">
+    <div class="pms-search"><span class="dashicons dashicons-search"></span><input type="search" data-pms-people-search placeholder="<?php esc_attr_e('Search people, role, department or designation…', 'pms'); ?>"></div>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=pms-roles')); ?>" class="pms-btn-secondary"><?php esc_html_e('Manage access', 'pms'); ?></a>
+</div>
+
 <div class="pms-panel">
     <table class="pms-table">
+
         <thead>
             <tr>
                 <th><?php esc_html_e('Name', 'pms'); ?></th>
@@ -66,7 +72,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
             $person_role_label = $person_role ? PMS_Roles::role_label($person_role) : __('No role', 'pms');
             $designation = PMS_User_Profile_Fields::designation($person->ID);
             ?>
-            <tr>
+            <tr data-pms-person-row>
                 <td>
                     <div class="pms-person-cell">
                         <?php echo get_avatar($person->ID, 28); ?>

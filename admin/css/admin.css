@@ -212,3 +212,27 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
     .pms-table { display:block; overflow-x:auto; white-space:nowrap; }
     .pms-table thead th, .pms-table tbody td { padding-left:14px; padding-right:14px; }
 }
+
+/* Employee dashboard attendance */
+.pms-attendance-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 20px;
+}
+.pms-attendance-summary > div {
+    padding: 16px;
+    border: 1px solid var(--pms-border);
+    border-radius: var(--pms-radius);
+    background: var(--pms-surface-soft, #f8fafc);
+}
+.pms-attendance-summary strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 18px;
+}
+@media (max-width: 700px) {
+    .pms-attendance-summary {
+        grid-template-columns: 1fr;
+    }
+}

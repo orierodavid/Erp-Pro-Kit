@@ -7,8 +7,24 @@ $user_id = get_current_user_id();
 $tasks = PMS_DB::get_tasks_for_user($user_id);
 $task_statuses = PMS_Constants::task_statuses();
 $work_modes = PMS_Constants::work_modes();
+$attendance = PMS_Attendance::today_for_user($user_id);
 ?>
 <div class="pms-wrap pms-frontend">
+<?php if (PMS_Modules::is_active('attendance') && current_user_can('pms_clock_in_out')) : ?>
+    <div class="pms-panel" style="margin-bottom:20px;">
+        <div class="pms-panel-heading">
+            <h2><?php esc_html_e('Today\'s Attendance', 'pms'); ?></h2>
+            <span class="pms-chip pms-attendance-status"><?php echo esc_html(PMS_Constants::label_for(PMS_Constants::attendance_statuses(), $attendance ? $attendance->status : 'not_started')); ?></span>
+        </div>
+        <div style="padding:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <button type="button" class="pms-clock-cta pms-attendance-btn" data-attendance-action="clock-in" <?php disabled($attendance && $attendance->status === 'clocked_in'); ?>><?php esc_html_e('Clock in', 'pms'); ?></button>
+            <button type="button" class="pms-btn-primary pms-attendance-btn" data-attendance-action="clock-out" <?php disabled(! $attendance || $attendance->status !== 'clocked_in'); ?>><?php esc_html_e('Clock out', 'pms'); ?></button>
+            <span class="pms-attendance-note" aria-live="polite"></span>
+        </div>
+    </div>
+<?php endif; ?>
+
+
     <div class="pms-panel">
         <div class="pms-panel-heading">
             <h2><?php esc_html_e('My Tasks', 'pms'); ?></h2>

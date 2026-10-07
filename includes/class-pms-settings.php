@@ -61,6 +61,8 @@ class PMS_Settings
             'default'           => 15,
         ]);
 
+        register_setting(self::OPTION_GROUP, PMS_Modules::option_name(), ['type'=>'array','sanitize_callback'=>static function ($value) { return is_array($value) ? array_map('sanitize_key', $value) : []; },'default'=>['hr','tasks']]);
+
         register_setting(self::OPTION_GROUP, 'pms_delete_data_on_uninstall', [
             'type'              => 'boolean',
             'sanitize_callback' => fn ($value) => $value === '1' ? '1' : '0',
@@ -79,6 +81,9 @@ class PMS_Settings
         add_settings_field('pms_default_geofence_radius_m', __('Default task geofence radius (metres)', 'pms'), [$this, 'field_geofence_radius'], 'pms-settings', 'pms_general');
         add_settings_field('pms_workday_hours', __('Default start time', 'pms'), [$this, 'field_workday_hours'], 'pms-settings', 'pms_general');
         add_settings_field('pms_late_grace_minutes', __('Late after', 'pms'), [$this, 'field_late_grace'], 'pms-settings', 'pms_general');
+
+        add_settings_section('pms_modules', __('ERP Modules', 'pms'), function () { echo '<p class="description">' . esc_html__('Activate company-wide modules here. Employee access is controlled separately by roles and capabilities.', 'pms') . '</p>'; }, 'pms-settings');
+        add_settings_field('pms_modules', __('Modules', 'pms'), [$this, 'field_modules'], 'pms-settings', 'pms_modules');
 
         add_settings_section('pms_danger', __('Danger zone', 'pms'), function () {
             echo '<p class="description">' . esc_html__('Controls what happens if this plugin is ever deleted.', 'pms') . '</p>';
@@ -145,6 +150,23 @@ class PMS_Settings
             checked('1', get_option('pms_delete_data_on_uninstall', '0'), false),
             esc_html__('Permanently delete all PMS tables, roles, and settings when this plugin is deleted', 'pms')
         );
+    }
+
+    public function field_modules(): void
+    {
+        $active = PMS_Modules::active();
+
+        foreach (PMS_Modules::definitions() as $slug => $module) {
+            printf(
+                '<label style="display:block;margin:0 0 14px;"><input type="checkbox" name="%s[]" value="%s" %s> <strong>%s</strong><br><span class="description" style="margin-left:22px;">%s</span></label>',
+                esc_attr(PMS_Modules::option_name()),
+                esc_attr($slug),
+                checked(in_array($slug, $active, true), true, false),
+                esc_html($module['label']),
+                esc_html($module['description'])
+            );
+        }
+        echo '<input type="hidden" name="' . esc_attr(PMS_Modules::option_name()) . '[]" value="">';
     }
 
     public static function option_group(): string

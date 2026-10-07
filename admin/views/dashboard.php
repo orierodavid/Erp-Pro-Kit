@@ -178,7 +178,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
         <?php else : ?>
             <div class="pms-dashboard-task-list">
                 <?php foreach ($rows as $task) : ?>
-                    <a class="pms-dashboard-task-row" href="<?php echo esc_url(admin_url('admin.php?page=' . ($is_admin ? 'pms-tasks' : 'pms-my-tasks') . '&task_id=' . (int) $task->id)); ?>">
+                    <a class="pms-dashboard-task-row" href="<?php echo esc_url(admin_url('admin.php?page=' . ($is_admin ? 'pms-tasks' : 'pms-my-tasks') . ($is_admin ? '&task_id=' : '&id=') . (int) $task->id)); ?>">
                         <span class="pms-dashboard-task-icon"><span class="dashicons dashicons-list-view"></span></span>
                         <span class="pms-dashboard-task-copy"><strong><?php echo esc_html($task->title); ?></strong><small><?php echo esc_html(PMS_Constants::label_for(PMS_Constants::task_statuses(), $task->status)); ?></small></span>
                         <span class="pms-chip pms-status-<?php echo esc_attr($task->status); ?>"><?php echo esc_html(PMS_Constants::label_for(PMS_Constants::task_statuses(), $task->status)); ?></span>

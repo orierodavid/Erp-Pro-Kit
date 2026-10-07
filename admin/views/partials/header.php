@@ -21,8 +21,8 @@ $pms_is_admin = PMS_Roles::current_user_is_pms_admin();
 
 $pms_nav_items = [
     ['slug' => 'pms-dashboard', 'label' => __('Dashboard', 'pms'), 'icon' => 'dashicons-grid-view', 'cap' => 'read'],
-    ['slug' => 'pms-my-tasks', 'label' => __('My Tasks', 'pms'), 'icon' => 'dashicons-yes-alt', 'cap' => 'pms_view_assigned_tasks'],
-    ['slug' => 'pms-tasks', 'label' => __('Tasks', 'pms'), 'icon' => 'dashicons-list-view', 'cap' => 'pms_manage_tasks'],
+    ['slug' => 'pms-my-tasks', 'label' => __('My Tasks', 'pms'), 'icon' => 'dashicons-yes-alt', 'cap' => 'pms_view_assigned_tasks', 'module' => 'tasks'],
+    ['slug' => 'pms-tasks', 'label' => __('Tasks', 'pms'), 'icon' => 'dashicons-list-view', 'cap' => 'pms_manage_tasks', 'module' => 'tasks'],
     ['slug' => 'pms-attendance', 'label' => __('Attendance', 'pms'), 'icon' => 'dashicons-clock', 'cap' => 'pms_view_attendance', 'module' => 'attendance'],
 ];
 

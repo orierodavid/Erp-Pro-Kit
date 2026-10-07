@@ -84,6 +84,7 @@ class PMS_Roles
             'pms_update_own_tasks'     => true,
             'pms_comment_on_tasks'     => true,
             'pms_upload_attachments'   => true,
+            'pms_request_leave'       => true,
             'read'                     => true,
         ];
     }
@@ -190,6 +191,7 @@ class PMS_Roles
                 'pms_view_attendance' => __('View attendance', 'pms'),
                 'pms_view_all_attendance' => __('View all attendance', 'pms'),
                 'pms_manage_leave' => __('Manage leave', 'pms'),
+                'pms_request_leave' => __('Request leave', 'pms'),
             ],
             'Work' => [
                 'pms_manage_tasks' => __('Manage all tasks', 'pms'),

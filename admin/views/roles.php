@@ -38,7 +38,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
 <?php foreach ($roles as $slug => $role) : ?>
 <div class="pms-panel pms-form-panel" style="margin-top:20px;">
     <div class="pms-panel-heading">
-        <div><h2><?php echo esc_html($role['label']); ?></h2><small><?php echo esc_html($slug); ?></small></div>
+        <div><h2><?php echo esc_html($role['label']); ?></h2><small><?php echo esc_html($slug); ?><?php echo ! empty($role['protected']) ? ' · ' . esc_html__('protected', 'pms') : ''; ?></small></div>
         <?php if (! $role['built_in']) : ?>
         <form method="post" onsubmit="return confirm('<?php echo esc_js(__('Delete this custom role?', 'pms')); ?>');">
             <?php wp_nonce_field('pms_roles_manage', 'pms_roles_nonce'); ?>
@@ -52,6 +52,9 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
         <?php wp_nonce_field('pms_roles_manage', 'pms_roles_nonce'); ?>
         <input type="hidden" name="pms_role_action" value="save">
         <input type="hidden" name="role_slug" value="<?php echo esc_attr($slug); ?>">
+        <?php if (! empty($role['protected'])) : ?>
+            <div class="pms-hint"><?php esc_html_e('The WordPress Administrator role is protected. Manage ERP-specific access with PMS Admin or a custom role.', 'pms'); ?></div>
+        <?php endif; ?>
         <div class="pms-permission-grid">
             <?php foreach ($catalogue as $group => $caps) : ?>
                 <div class="pms-permission-group"><h3><?php echo esc_html($group); ?></h3>
@@ -61,7 +64,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
                 </div>
             <?php endforeach; ?>
         </div>
-        <button type="submit" class="pms-btn-primary"><?php esc_html_e('Save permissions', 'pms'); ?></button>
+        <?php if (empty($role['protected'])) : ?><button type="submit" class="pms-btn-primary"><?php esc_html_e('Save permissions', 'pms'); ?></button><?php endif; ?>
     </form>
 </div>
 <?php endforeach; ?>

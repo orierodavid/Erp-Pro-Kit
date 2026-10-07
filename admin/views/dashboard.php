@@ -58,65 +58,85 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
             : 0;
         ?>
         <section class="pms-attendance-card pms-attendance-command" aria-labelledby="pms-attendance-title">
-            <div class="pms-attendance-command-top">
-                <div>
+            <div class="pms-attendance-hero">
+                <div class="pms-attendance-hero-copy">
                     <div class="pms-attendance-overline">
                         <span class="pms-live-dot <?php echo $attendance_is_live ? 'is-live' : ''; ?>"></span>
-                        <span><?php echo $attendance_is_live ? esc_html__('Live workday', 'pms') : esc_html__('Workday status', 'pms'); ?></span>
+                        <span><?php echo $attendance_is_live ? esc_html__('Live workday', 'pms') : esc_html__('Workday control', 'pms'); ?></span>
                     </div>
                     <h2 id="pms-attendance-title"><?php esc_html_e("Today's attendance", 'pms'); ?></h2>
-                    <p><?php echo $attendance_is_live ? esc_html__('You are currently on the clock.', 'pms') : esc_html__('Your presence, shift and time are ready when you are.', 'pms'); ?></p>
+                    <p><?php echo $attendance_is_live ? esc_html__('Your workday is active. Time is being tracked live.', 'pms') : esc_html__('Start your workday when you are ready. Your attendance stays independent from tasks.', 'pms'); ?></p>
                 </div>
-                <span class="pms-attendance-status <?php echo $attendance_is_live ? 'is-live' : ''; ?>">
-                    <span><?php echo $attendance_is_live ? esc_html__('ON DUTY', 'pms') : esc_html__('OFF DUTY', 'pms'); ?></span>
-                </span>
+                <div class="pms-attendance-hero-status <?php echo $attendance_is_live ? 'is-live' : ''; ?>">
+                    <span class="pms-status-orb"></span>
+                    <div>
+                        <small><?php esc_html_e('Current status', 'pms'); ?></small>
+                        <strong><?php echo $attendance_is_live ? esc_html__('On duty', 'pms') : esc_html__('Off duty', 'pms'); ?></strong>
+                    </div>
+                </div>
             </div>
 
-            <div class="pms-attendance-command-grid">
-                <div class="pms-attendance-ring-wrap">
+            <div class="pms-attendance-stage">
+                <div class="pms-attendance-time-card">
+                    <div class="pms-attendance-time-glow"></div>
                     <div class="pms-attendance-ring" style="--pms-attendance-progress: <?php echo esc_attr($attendance_progress); ?>%;">
                         <div class="pms-attendance-ring-core">
                             <span><?php echo $attendance_minutes !== null ? esc_html($attendance_minutes) : '0'; ?></span>
                             <small><?php esc_html_e('MINUTES', 'pms'); ?></small>
                         </div>
                     </div>
-                    <span class="pms-attendance-ring-label"><?php echo esc_html(sprintf(__('%d%% of shift', 'pms'), round($attendance_progress))); ?></span>
+                    <strong class="pms-attendance-time-caption"><?php echo esc_html(sprintf(__('%d%% of shift', 'pms'), round($attendance_progress))); ?></strong>
+                    <span class="pms-attendance-time-state"><?php echo $attendance_is_live ? esc_html__('Tracking your workday', 'pms') : esc_html__('Ready when you are', 'pms'); ?></span>
                 </div>
 
-                <div class="pms-attendance-metrics">
-                    <div class="pms-attendance-metric">
-                        <span><?php esc_html_e('Started', 'pms'); ?></span>
-                        <strong><?php echo $attendance && $attendance->clock_in ? esc_html(wp_date(get_option('time_format'), strtotime($attendance->clock_in))) : '—'; ?></strong>
+                <div class="pms-attendance-details">
+                    <div class="pms-attendance-shift-head">
+                        <div>
+                            <span><?php esc_html_e('Today’s shift', 'pms'); ?></span>
+                            <strong><?php echo esc_html($workday_start . ' – ' . $workday_end); ?></strong>
+                        </div>
+                        <span class="pms-attendance-badge"><?php echo $attendance ? esc_html(ucwords(str_replace('_', ' ', $attendance->status))) : esc_html__('Not started', 'pms'); ?></span>
                     </div>
-                    <div class="pms-attendance-metric">
-                        <span><?php esc_html_e('Finished', 'pms'); ?></span>
-                        <strong><?php echo $attendance && $attendance->clock_out ? esc_html(wp_date(get_option('time_format'), strtotime($attendance->clock_out))) : '—'; ?></strong>
+
+                    <div class="pms-attendance-timeline">
+                        <div class="pms-attendance-track"><span style="width: <?php echo esc_attr($attendance_progress); ?>%;"></span></div>
+                        <div class="pms-attendance-timepoint">
+                            <div><span class="pms-timepoint-dot"></span><small><?php esc_html_e('Start', 'pms'); ?></small></div>
+                            <strong><?php echo $attendance && $attendance->clock_in ? esc_html(wp_date(get_option('time_format'), strtotime($attendance->clock_in))) : '—'; ?></strong>
+                        </div>
+                        <div class="pms-attendance-timepoint is-end">
+                            <div><span class="pms-timepoint-dot"></span><small><?php esc_html_e('Finish', 'pms'); ?></small></div>
+                            <strong><?php echo $attendance && $attendance->clock_out ? esc_html(wp_date(get_option('time_format'), strtotime($attendance->clock_out))) : '—'; ?></strong>
+                        </div>
                     </div>
-                    <div class="pms-attendance-metric">
-                        <span><?php esc_html_e('Shift', 'pms'); ?></span>
-                        <strong><?php echo esc_html($workday_start . ' – ' . $workday_end); ?></strong>
-                    </div>
-                    <div class="pms-attendance-metric">
-                        <span><?php esc_html_e('Status', 'pms'); ?></span>
-                        <strong><?php echo $attendance ? esc_html(ucwords(str_replace('_', ' ', $attendance->status))) : esc_html__('Not started', 'pms'); ?></strong>
+
+                    <div class="pms-attendance-stats">
+                        <div><span><?php esc_html_e('Clock in', 'pms'); ?></span><strong><?php echo $attendance && $attendance->clock_in ? esc_html(wp_date(get_option('time_format'), strtotime($attendance->clock_in))) : esc_html__('Not started', 'pms'); ?></strong></div>
+                        <div><span><?php esc_html_e('Clock out', 'pms'); ?></span><strong><?php echo $attendance && $attendance->clock_out ? esc_html(wp_date(get_option('time_format'), strtotime($attendance->clock_out))) : esc_html__('Not yet', 'pms'); ?></strong></div>
+                        <div><span><?php esc_html_e('Shift length', 'pms'); ?></span><strong><?php echo esc_html(round($workday_minutes / 60, 1) . ' hrs'); ?></strong></div>
                     </div>
                 </div>
 
                 <div class="pms-attendance-action">
+                    <div class="pms-action-icon"><span class="dashicons dashicons-clock"></span></div>
                     <div class="pms-attendance-action-copy">
-                        <span><?php esc_html_e('Today', 'pms'); ?></span>
-                        <strong><?php echo $attendance_is_live ? esc_html__('Your shift is active', 'pms') : esc_html__('Ready to start', 'pms'); ?></strong>
+                        <span><?php echo $attendance_is_live ? esc_html__('You’re on the clock', 'pms') : esc_html__('Ready to begin', 'pms'); ?></span>
+                        <strong><?php echo $attendance_is_live ? esc_html__('Keep your workday moving.', 'pms') : esc_html__('Start your workday.', 'pms'); ?></strong>
                     </div>
                     <?php if ($attendance_is_live) : ?>
                         <button type="button" class="pms-attendance-primary pms-attendance-btn" data-attendance-action="clock-out">
                             <span class="dashicons dashicons-controls-pause"></span>
                             <?php esc_html_e('Clock out', 'pms'); ?>
+                            <span class="dashicons dashicons-arrow-right-alt2"></span>
                         </button>
                     <?php elseif (! $attendance || $attendance->status !== 'clocked_out') : ?>
                         <button type="button" class="pms-attendance-primary pms-attendance-btn" data-attendance-action="clock-in">
                             <span class="dashicons dashicons-controls-play"></span>
                             <?php esc_html_e('Start workday', 'pms'); ?>
+                            <span class="dashicons dashicons-arrow-right-alt2"></span>
                         </button>
+                    <?php else : ?>
+                        <div class="pms-attendance-complete"><?php esc_html_e('Workday complete', 'pms'); ?><span class="dashicons dashicons-yes-alt"></span></div>
                     <?php endif; ?>
                     <span class="pms-attendance-note" aria-live="polite"></span>
                 </div>

@@ -16,6 +16,7 @@ class PMS_CSV_Export
     public function __construct()
     {
         add_action('admin_post_pms_export_task_report', [$this, 'export_task_report']);
+        add_action('admin_post_pms_export_leave_report', [$this, 'export_leave_report']);
     }
 
     public function export_task_report(): void
@@ -84,4 +85,63 @@ class PMS_CSV_Export
         fclose($out);
         exit;
     }
+
+    public function export_leave_report(): void
+    {
+        if (! current_user_can('pms_request_leave') && ! current_user_can('pms_manage_leave')) {
+            wp_die(__('You do not have permission to do this.', 'pms'));
+        }
+
+        check_admin_referer('pms_export_leave_report_action');
+
+        $filters = [
+            'status' => isset($_GET['status']) ? sanitize_key($_GET['status']) : '',
+            'leave_type' => isset($_GET['leave_type']) ? sanitize_key($_GET['leave_type']) : '',
+            'from' => isset($_GET['from']) ? sanitize_text_field($_GET['from']) : '',
+            'to' => isset($_GET['to']) ? sanitize_text_field($_GET['to']) : '',
+        ];
+
+        if (! current_user_can('pms_manage_leave')) {
+            $filters['user_id'] = get_current_user_id();
+        }
+
+        $rows = PMS_DB::get_leave_requests($filters);
+        $types = PMS_DB::leave_types();
+
+        nocache_headers();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="leave-report.csv"');
+
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        fputcsv($out, [
+            __('Employee', 'pms'),
+            __('Leave type', 'pms'),
+            __('Start date', 'pms'),
+            __('End date', 'pms'),
+            __('Days', 'pms'),
+            __('Reason', 'pms'),
+            __('Status', 'pms'),
+            __('Created', 'pms'),
+            __('Reviewed', 'pms'),
+        ]);
+
+        foreach ($rows as $row) {
+            fputcsv($out, [
+                $row->user_name,
+                $types[$row->leave_type] ?? $row->leave_type,
+                $row->start_date,
+                $row->end_date,
+                $row->days,
+                $row->reason ?: '',
+                $row->status,
+                $row->created_at,
+                $row->reviewed_at ?: '',
+            ]);
+        }
+
+        fclose($out);
+        exit;
+    }
+
 }

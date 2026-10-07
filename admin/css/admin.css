@@ -1076,3 +1076,24 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
 .pms-exact-task-list{display:flex;flex-direction:column;gap:10px;margin-top:18px}.pms-exact-task-row{display:grid;grid-template-columns:12px 1fr auto 18px;align-items:center;gap:12px;padding:14px;background:#f8fafc;border:1px solid rgba(226,232,240,.7);border-radius:12px;color:#1e293b;text-decoration:none}.pms-exact-task-dot{width:10px;height:10px;border-radius:50%}.pms-exact-task-dot-todo{background:#3b82f6}.pms-exact-task-dot-in_progress{background:#10b981}.pms-exact-task-dot-done{background:#a855f7}.pms-exact-task-title{font-size:12px;font-weight:700}.pms-exact-task-status{font-size:10px;font-weight:800;text-transform:uppercase;color:#64748b}
 @media(max-width:1100px){.pms-exact-dashboard-inner{padding:24px}.pms-exact-attendance-stage{grid-template-columns:1fr}.pms-exact-status-card{min-height:auto}}
 @media(max-width:782px){.pms-shell:has(.pms-exact-dashboard) .pms-shell-body{margin-left:0}.pms-shell:has(.pms-exact-dashboard) .pms-shell-sidebar{width:260px}.pms-exact-dashboard-inner{padding:16px}.pms-exact-welcome{align-items:flex-start;flex-direction:column;padding:22px}.pms-exact-kpis{grid-template-columns:1fr}.pms-exact-recent-head{align-items:flex-start;flex-direction:column}.pms-exact-recent-actions{width:100%;justify-content:space-between}.pms-exact-attendance-meta{grid-template-columns:1fr}.pms-exact-workspace-switcher{display:none}}
+
+/* ===========================================================
+   Payroll workspace
+   =========================================================== */
+.pms-payroll-header{margin-bottom:18px}
+.pms-payroll-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 20px;padding:6px;background:#fff;border:1px solid #E2E8F0;border-radius:14px;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.pms-payroll-tabs a{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border-radius:10px;color:#475569;text-decoration:none;font-size:12px;font-weight:700}
+.pms-payroll-tabs a:hover{background:#F8FAFC;color:#1D4ED8}
+.pms-payroll-tabs a.is-active{background:#2563EB;color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.2)}
+.pms-payroll-tabs .dashicons{font-size:16px;width:16px;height:16px}
+.pms-section-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.pms-section-head h2{margin:0;color:#0F172A;font-size:17px;font-weight:800}
+.pms-section-head p{margin:4px 0 0;color:#64748B;font-size:12px}
+.pms-btn-small{padding:6px 9px!important;font-size:11px!important}
+.pms-inline-form{display:inline}
+.pms-checkbox-row{align-self:end}
+.pms-checkbox-row label{display:flex;align-items:center;gap:7px}
+.pms-payroll-report-total{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-radius:12px;background:#F8FAFC;border:1px solid #E2E8F0}
+.pms-payroll-report-total span{color:#64748B;font-size:13px;font-weight:700}
+.pms-payroll-report-total strong{color:#0F172A;font-size:24px;font-weight:800}
+@media(max-width:760px){.pms-payroll-tabs{overflow:auto;flex-wrap:nowrap}.pms-payroll-tabs a{white-space:nowrap}.pms-section-head{align-items:flex-start;flex-direction:column}}

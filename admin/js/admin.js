@@ -158,9 +158,64 @@
         });
     }
 
+
+    function initAttendanceButtons() {
+        var buttons = document.querySelectorAll('.pms-attendance-btn');
+
+        Array.prototype.forEach.call(buttons, function (btn) {
+            btn.addEventListener('click', function () {
+                var action = btn.dataset.attendanceAction;
+                var note = document.querySelector('.pms-attendance-note');
+                var buttonsAll = document.querySelectorAll('.pms-attendance-btn');
+
+                function send(path, data) {
+                    Array.prototype.forEach.call(buttonsAll, function (item) { item.disabled = true; });
+                    if (note) note.textContent = 'Saving…';
+
+                    wp.apiFetch({
+                        path: path,
+                        method: 'POST',
+                        data: data || {}
+                    }).then(function () {
+                        window.location.reload();
+                    }).catch(function (err) {
+                        Array.prototype.forEach.call(buttonsAll, function (item) { item.disabled = false; });
+                        if (note) note.textContent = err.message || 'Could not update attendance.';
+                    });
+                }
+
+                if (action === 'clock-out') {
+                    send('/pms/v1/attendance/clock-out');
+                    return;
+                }
+
+                if (!navigator.geolocation) {
+                    send('/pms/v1/attendance/clock-in');
+                    return;
+                }
+
+                if (note) note.textContent = 'Getting your location…';
+                navigator.geolocation.getCurrentPosition(
+                    function (pos) {
+                        send('/pms/v1/attendance/clock-in', {
+                            lat: pos.coords.latitude,
+                            lng: pos.coords.longitude
+                        });
+                    },
+                    function () {
+                        // Location is optional for attendance; clock in without it.
+                        send('/pms/v1/attendance/clock-in');
+                    },
+                    { timeout: 8000 }
+                );
+            });
+        });
+    }
+
     onReady(function () {
         initWorkModeToggle();
         initAddressVerification();
         initStartTaskButtons();
+        initAttendanceButtons();
     });
 })();

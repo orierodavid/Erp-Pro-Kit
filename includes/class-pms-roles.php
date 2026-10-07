@@ -95,19 +95,37 @@ class PMS_Roles
      */
     public static function register(): void
     {
-        remove_role(self::ADMIN_ROLE);
-        remove_role(self::STAFF_ROLE);
-        foreach (array_keys(self::erp_roles()) as $role) {
-            remove_role($role);
+        $admin = get_role(self::ADMIN_ROLE);
+        if (! $admin) {
+            add_role(self::ADMIN_ROLE, __('PMS Admin', 'pms'), self::admin_capabilities());
+        } else {
+            foreach (array_keys(self::admin_capabilities()) as $cap) {
+                $admin->add_cap($cap);
+            }
         }
 
-        add_role(self::ADMIN_ROLE, __('PMS Admin', 'pms'), self::admin_capabilities());
-        add_role(self::STAFF_ROLE, __('PMS Staff', 'pms'), self::staff_capabilities());
+        $staff = get_role(self::STAFF_ROLE);
+        if (! $staff) {
+            add_role(self::STAFF_ROLE, __('PMS Staff', 'pms'), self::staff_capabilities());
+        } else {
+            foreach (array_keys(self::staff_capabilities()) as $cap) {
+                $staff->add_cap($cap);
+            }
+        }
 
         foreach (self::erp_roles() as $slug => $definition) {
+            $role = get_role($slug);
             $caps = array_fill_keys($definition['caps'], true);
             $caps['read'] = true;
-            add_role($slug, $definition['label'], $caps);
+
+            if (! $role) {
+                add_role($slug, $definition['label'], $caps);
+                continue;
+            }
+
+            foreach (array_keys($caps) as $cap) {
+                $role->add_cap($cap);
+            }
         }
 
         self::grant_to_administrators();

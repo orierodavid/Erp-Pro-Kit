@@ -1213,3 +1213,179 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
  .pms-invoice-builder-footer{align-items:flex-start;flex-direction:column}
  .pms-invoice-actions{flex-direction:column;align-items:stretch}
 }
+
+
+/* ===========================================================
+   ERP PRO KIT — frontend-style WordPress application layer.
+   All brand accents come ONLY from Settings > Branding:
+   Primary color + Secondary color. Neutrals remain structural.
+   =========================================================== */
+.pms-shell, .pms-wrap{
+    --pms-primary: #2563eb;
+    --pms-secondary: #0f172a;
+    --pms-primary-dark: color-mix(in srgb,var(--pms-primary) 82%,#000);
+    --pms-secondary-dark: color-mix(in srgb,var(--pms-secondary) 82%,#000);
+    --pms-primary-soft: color-mix(in srgb,var(--pms-primary) 10%,#fff);
+    --pms-secondary-soft: color-mix(in srgb,var(--pms-secondary) 8%,#fff);
+}
+.pms-shell{
+    background:#f6f7f9;
+}
+.pms-shell-sidebar{
+    background:#fff;
+    border:1px solid #e7e9ee;
+    box-shadow:0 18px 45px rgba(15,23,42,.08);
+}
+.pms-brand-mark{
+    background:var(--pms-primary)!important;
+    box-shadow:0 8px 20px color-mix(in srgb,var(--pms-primary) 24%,transparent)!important;
+}
+.pms-nav-item.is-active{
+    background:var(--pms-primary)!important;
+    box-shadow:0 8px 20px color-mix(in srgb,var(--pms-primary) 22%,transparent)!important;
+}
+.pms-nav-item:hover{
+    background:var(--pms-primary-soft)!important;
+    color:var(--pms-secondary)!important;
+}
+.pms-nav-item:hover .dashicons{
+    color:var(--pms-primary)!important;
+}
+.pms-nav-item.is-active .dashicons{color:#fff!important}
+.pms-back-link:hover,.pms-topbar-wp-link:hover,.pms-hint a,.pms-page-description a{
+    color:var(--pms-primary)!important;
+}
+.pms-btn-primary,.pms-wrap .button-primary,.pms-btn-primary-submit.button-primary{
+    background:var(--pms-primary)!important;
+    box-shadow:0 8px 18px color-mix(in srgb,var(--pms-primary) 20%,transparent)!important;
+}
+.pms-btn-secondary{
+    border-color:color-mix(in srgb,var(--pms-secondary) 16%,#fff);
+    color:var(--pms-secondary);
+}
+.pms-btn-secondary:hover{
+    background:var(--pms-secondary-soft);
+}
+.pms-shell-topbar{
+    background:rgba(246,247,249,.92);
+}
+.pms-topbar-search:focus-within{
+    border-color:var(--pms-primary)!important;
+    box-shadow:0 0 0 3px var(--pms-primary-soft)!important;
+}
+.pms-topbar-search .dashicons{color:var(--pms-primary)!important}
+.pms-exact-dashboard{
+    background:#f6f7f9!important;
+}
+.pms-exact-dashboard-inner{
+    max-width:1280px;
+    padding:28px 32px 48px;
+}
+.pms-exact-welcome{
+    min-height:176px;
+    border:0!important;
+    border-radius:24px!important;
+    background:linear-gradient(135deg,var(--pms-secondary) 0%,var(--pms-secondary-dark) 72%)!important;
+    box-shadow:0 20px 45px rgba(15,23,42,.14)!important;
+    color:#fff;
+}
+.pms-exact-welcome:after{
+    content:"";
+    position:absolute;
+    width:280px;height:280px;
+    right:-70px;top:-130px;
+    border-radius:50%;
+    background:var(--pms-primary);
+    opacity:.22;
+}
+.pms-exact-kicker{color:color-mix(in srgb,#fff 68%,var(--pms-primary))!important}
+.pms-exact-welcome h2,.pms-exact-welcome h2 span{color:#fff!important}
+.pms-exact-welcome h2 span{
+    text-decoration:underline;
+    text-decoration-color:var(--pms-primary);
+    text-decoration-thickness:5px;
+    text-underline-offset:7px;
+}
+.pms-exact-welcome p{color:rgba(255,255,255,.72)!important}
+.pms-exact-date{
+    position:relative;z-index:2;
+    border:1px solid rgba(255,255,255,.14)!important;
+    background:rgba(255,255,255,.09)!important;
+    color:#fff!important;
+    backdrop-filter:blur(12px);
+}
+.pms-exact-date .dashicons{color:var(--pms-primary)!important}
+.pms-exact-kpis{gap:16px}
+.pms-exact-kpi{
+    min-height:164px;
+    border:1px solid #e6e8ed!important;
+    border-radius:20px!important;
+    box-shadow:0 8px 24px rgba(15,23,42,.05)!important;
+}
+.pms-exact-kpi:hover{
+    transform:translateY(-3px);
+    border-color:color-mix(in srgb,var(--pms-primary) 24%,#e6e8ed)!important;
+    box-shadow:0 16px 32px rgba(15,23,42,.09)!important;
+}
+.pms-exact-kpi-todo .pms-exact-kpi-icon,
+.pms-exact-kpi-progress .pms-exact-kpi-icon,
+.pms-exact-kpi-done .pms-exact-kpi-icon{
+    background:var(--pms-primary-soft)!important;
+    color:var(--pms-primary)!important;
+}
+.pms-exact-kpi-copy strong{color:var(--pms-secondary)!important}
+.pms-exact-kpi-arrow{background:var(--pms-secondary-soft)!important;color:var(--pms-secondary)!important}
+.pms-exact-kpi-line{background:var(--pms-primary)!important}
+.pms-exact-kpi:nth-child(even) .pms-exact-kpi-line{background:var(--pms-secondary)!important}
+.pms-exact-attendance,.pms-exact-recent{
+    border:1px solid #e6e8ed!important;
+    border-radius:20px!important;
+    box-shadow:0 8px 24px rgba(15,23,42,.05)!important;
+}
+.pms-exact-section-icon,
+.pms-exact-section-icon-orange,
+.pms-exact-section-icon-blue{
+    background:var(--pms-primary)!important;
+    color:#fff!important;
+}
+.pms-exact-attendance-date{
+    background:var(--pms-primary-soft)!important;
+    color:var(--pms-primary)!important;
+    border-color:color-mix(in srgb,var(--pms-primary) 18%,#fff)!important;
+}
+.pms-exact-live-dot,.pms-exact-status-dot.is-live{background:var(--pms-primary)!important}
+.pms-exact-attendance-stage{background:var(--pms-secondary-soft)!important}
+.pms-exact-attendance-action:hover{
+    border-color:var(--pms-primary)!important;
+}
+.pms-exact-action-icon{
+    background:var(--pms-primary-soft)!important;
+    color:var(--pms-primary)!important;
+}
+.pms-exact-recent-head h3,.pms-exact-section-title h3{color:var(--pms-secondary)!important}
+.pms-exact-recent-link{color:var(--pms-primary)!important}
+.pms-exact-status-value strong{color:var(--pms-secondary)!important}
+.pms-exact-workspace-button.is-active-admin,
+.pms-exact-workspace-button.is-active-staff{
+    background:var(--pms-primary)!important;
+    color:#fff!important;
+}
+.pms-shell.pms-workspace-staff:has(.pms-exact-dashboard) .pms-brand-mark,
+.pms-shell.pms-workspace-staff:has(.pms-exact-dashboard) .pms-nav-item.is-active{
+    background:var(--pms-primary)!important;
+    box-shadow:0 8px 20px color-mix(in srgb,var(--pms-primary) 22%,transparent)!important;
+}
+.pms-shell:has(.pms-exact-dashboard) .pms-shell-sidebar::after{
+    background-image:linear-gradient(to top,color-mix(in srgb,var(--pms-primary) 18%,transparent),transparent 80%)!important;
+}
+@media (max-width:900px){
+    .pms-exact-dashboard-inner{padding:20px}
+    .pms-exact-kpis{grid-template-columns:1fr}
+    .pms-exact-welcome{padding:24px;min-height:150px}
+}
+@media (max-width:600px){
+    .pms-exact-dashboard-inner{padding:14px}
+    .pms-exact-welcome{display:block}
+    .pms-exact-date{display:inline-flex;margin-top:18px}
+    .pms-exact-welcome h2{font-size:25px}
+}

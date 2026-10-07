@@ -85,6 +85,7 @@ class PMS_Roles
             'pms_comment_on_tasks'     => true,
             'pms_upload_attachments'   => true,
             'pms_request_leave'       => true,
+            'pms_submit_expenses'    => true,
             'read'                     => true,
         ];
     }
@@ -205,6 +206,7 @@ class PMS_Roles
                 'pms_manage_payroll' => __('Manage payroll', 'pms'),
                 'pms_manage_invoices' => __('Manage invoices', 'pms'),
                 'pms_manage_expenses' => __('Manage expenses', 'pms'),
+                'pms_submit_expenses' => __('Submit expenses', 'pms'),
             ],
             'Sales & Real Estate' => [
                 'pms_manage_crm' => __('Manage CRM', 'pms'),

@@ -28,6 +28,7 @@ define('PMS_DB_VERSION', '1.8.0'); // bump this + update Activator when schema/r
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-activator.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-deactivator.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-roles.php';
+require_once PMS_PLUGIN_DIR . 'includes/class-pms-wp-access.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-modules.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-attendance.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-leave.php';

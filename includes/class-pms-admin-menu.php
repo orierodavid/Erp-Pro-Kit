@@ -148,7 +148,9 @@ class PMS_Admin_Menu
             }
         }
 
-        $roles = PMS_Roles::role_definitions_for_ui();
+        $roles = array_filter(PMS_Roles::role_definitions_for_ui(), function ($role, $slug) {
+            return $slug !== 'administrator' || current_user_can('manage_options');
+        }, ARRAY_FILTER_USE_BOTH);
         $departments = PMS_DB::get_departments();
         include PMS_PLUGIN_DIR . 'admin/views/user-new.php';
     }

@@ -15,6 +15,7 @@ class PMS_Activator
         dbDelta(PMS_Payroll::schema_sql());
         dbDelta(PMS_CRM::schema_sql());
         dbDelta(PMS_Invoicing::schema_sql());
+        dbDelta(PMS_Expenses::schema_sql());
 
         PMS_Roles::register();
 

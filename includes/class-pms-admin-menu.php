@@ -58,6 +58,9 @@ class PMS_Admin_Menu
         if (PMS_Modules::is_active('invoicing') && current_user_can('pms_manage_invoices')) {
             add_submenu_page('pms-dashboard', __('Invoicing', 'pms'), __('Invoicing', 'pms'), 'pms_manage_invoices', 'pms-invoicing', [$this, 'render_invoicing']);
         }
+        if (PMS_Modules::is_active('expenses') && (current_user_can('pms_manage_expenses') || current_user_can('pms_submit_expenses'))) {
+            add_submenu_page('pms-dashboard', __('Expenses', 'pms'), __('Expenses', 'pms'), 'read', 'pms-expenses', [$this, 'render_expenses']);
+        }
         if (PMS_Modules::is_active('payroll') && current_user_can('pms_manage_payroll')) {
             add_submenu_page('pms-dashboard', __('Payroll', 'pms'), __('Payroll', 'pms'), 'pms_manage_payroll', 'pms-payroll', [$this, 'render_payroll']);
             add_submenu_page(null, __('Salary Details', 'pms'), __('Salary Details', 'pms'), 'pms_manage_payroll', 'pms-payroll-salary', [$this, 'render_payroll']);
@@ -121,6 +124,14 @@ class PMS_Admin_Menu
             wp_die(__('You do not have permission to view this page.', 'pms'));
         }
         include PMS_PLUGIN_DIR . 'admin/views/invoicing.php';
+    }
+
+    public function render_expenses(): void
+    {
+        if (! PMS_Modules::is_active('expenses') || (! current_user_can('pms_manage_expenses') && ! current_user_can('pms_submit_expenses'))) {
+            wp_die(__('You do not have permission to view this page.', 'pms'));
+        }
+        include PMS_PLUGIN_DIR . 'admin/views/expenses.php';
     }
 
     public function render_payroll(): void

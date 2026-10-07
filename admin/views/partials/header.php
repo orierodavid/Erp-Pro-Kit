@@ -26,6 +26,7 @@ $pms_nav_items = [
     ['slug' => 'pms-my-account', 'label' => __('My Profile', 'pms'), 'icon' => 'dashicons-admin-users', 'cap' => 'read'],
     ['slug' => 'pms-crm', 'label' => __('CRM / Sales', 'pms'), 'icon' => 'dashicons-chart-area', 'cap' => 'pms_manage_crm', 'module' => 'crm'],
     ['slug' => 'pms-invoicing', 'label' => __('Invoicing', 'pms'), 'icon' => 'dashicons-media-text', 'cap' => 'pms_manage_invoices', 'module' => 'invoicing'],
+    ['slug' => 'pms-expenses', 'label' => __('Expenses', 'pms'), 'icon' => 'dashicons-money-alt', 'cap' => 'pms_submit_expenses', 'module' => 'expenses'],
 ];
 
 $pms_org_items = [

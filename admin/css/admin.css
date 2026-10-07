@@ -909,3 +909,13 @@ body.pms-fullscreen-app {
         align-items: flex-start;
     }
 }
+
+
+/* ERP-native forms: compact, app-like controls without changing WordPress core screens. */
+.pms-page-description{margin:8px 0 0;color:var(--pms-muted);max-width:720px;font-size:14px;line-height:1.6}
+.pms-permission-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:20px 0}
+.pms-permission-group{border:1px solid var(--pms-border);border-radius:14px;padding:16px;background:var(--pms-surface,#fff)}
+.pms-permission-group h3{margin:0 0 12px;font-size:13px}
+.pms-permission-group label{display:flex;align-items:flex-start;gap:9px;padding:7px 0;font-size:13px;line-height:1.4}
+.pms-permission-group input[type="checkbox"]{margin-top:2px}
+.pms-panel-heading form{margin:0}

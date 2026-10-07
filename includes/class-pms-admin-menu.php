@@ -35,11 +35,15 @@ class PMS_Admin_Menu
         );
 
         add_submenu_page('pms-dashboard', __('Dashboard', 'pms'), __('Dashboard', 'pms'), 'read', 'pms-dashboard', [$this, 'render_dashboard']);
-        add_submenu_page('pms-dashboard', __('My Tasks', 'pms'), __('My Tasks', 'pms'), 'pms_view_assigned_tasks', 'pms-my-tasks', [$this, 'render_my_tasks']);
+        if (PMS_Modules::is_active('tasks')) {
+            add_submenu_page('pms-dashboard', __('My Tasks', 'pms'), __('My Tasks', 'pms'), 'pms_view_assigned_tasks', 'pms-my-tasks', [$this, 'render_my_tasks']);
+        }
         if (PMS_Modules::is_active('attendance')) {
             add_submenu_page('pms-dashboard', __('Attendance', 'pms'), __('Attendance', 'pms'), 'pms_view_attendance', 'pms-attendance', [$this, 'render_attendance']);
         }
-        add_submenu_page('pms-dashboard', __('Tasks', 'pms'), __('Tasks', 'pms'), 'pms_manage_tasks', 'pms-tasks', [$this, 'render_tasks']);
+        if (PMS_Modules::is_active('tasks')) {
+            add_submenu_page('pms-dashboard', __('Tasks', 'pms'), __('Tasks', 'pms'), 'pms_manage_tasks', 'pms-tasks', [$this, 'render_tasks']);
+        }
         add_submenu_page('pms-dashboard', __('People', 'pms'), __('People', 'pms'), 'pms_manage_users', 'pms-users', [$this, 'render_users']);
         add_submenu_page(null, __('Add person', 'pms'), __('Add person', 'pms'), 'pms_manage_users', 'pms-user-new', [$this, 'render_user_new']);
         add_submenu_page('pms-dashboard', __('Roles & Permissions', 'pms'), __('Roles & Permissions', 'pms'), 'pms_manage_users', 'pms-roles', [$this, 'render_roles']);
@@ -59,7 +63,7 @@ class PMS_Admin_Menu
 
     public function render_my_tasks(): void
     {
-        if (! current_user_can('pms_view_assigned_tasks')) {
+        if (! PMS_Modules::is_active('tasks') || ! current_user_can('pms_view_assigned_tasks')) {
             wp_die(__('You do not have permission to view this page.', 'pms'));
         }
         include PMS_PLUGIN_DIR . 'admin/views/my-tasks.php';
@@ -75,7 +79,7 @@ class PMS_Admin_Menu
 
     public function render_tasks(): void
     {
-        if (! current_user_can('pms_manage_tasks')) {
+        if (! PMS_Modules::is_active('tasks') || ! current_user_can('pms_manage_tasks')) {
             wp_die(__('You do not have permission to view this page.', 'pms'));
         }
         include PMS_PLUGIN_DIR . 'admin/views/tasks.php';

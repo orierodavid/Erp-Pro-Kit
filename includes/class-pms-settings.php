@@ -101,7 +101,13 @@ class PMS_Settings
         register_setting(self::OPTION_GROUP, 'pms_primary_color', [
             'type'              => 'string',
             'sanitize_callback' => [$this, 'sanitize_color'],
-            'default'           => '#e91e63',
+            'default'           => '#2563eb',
+        ]);
+
+        register_setting(self::OPTION_GROUP, 'pms_secondary_color', [
+            'type'              => 'string',
+            'sanitize_callback' => [$this, 'sanitize_color'],
+            'default'           => '#0f172a',
         ]);
 
         register_setting(self::OPTION_GROUP, 'pms_default_geofence_radius_m', [
@@ -142,6 +148,7 @@ class PMS_Settings
 
         add_settings_field('pms_company_name', __('Company name', 'pms'), [$this, 'field_company_name'], 'pms-settings', 'pms_branding');
         add_settings_field('pms_primary_color', __('Primary color', 'pms'), [$this, 'field_primary_color'], 'pms-settings', 'pms_branding');
+        add_settings_field('pms_secondary_color', __('Secondary color', 'pms'), [$this, 'field_secondary_color'], 'pms-settings', 'pms_branding');
 
 
         add_settings_section('pms_company_billing', __('Company & Billing', 'pms'), function () {
@@ -285,7 +292,15 @@ class PMS_Settings
     {
         printf(
             '<input type="text" class="pms-color-picker" name="pms_primary_color" value="%s" data-default-color="#e91e63">',
-            esc_attr(get_option('pms_primary_color', '#e91e63'))
+            esc_attr(get_option('pms_primary_color', '#2563eb'))
+        );
+    }
+
+    public function field_secondary_color(): void
+    {
+        printf(
+            '<input type="text" class="pms-color-picker" name="pms_secondary_color" value="%s" data-default-color="#0f172a">',
+            esc_attr(get_option('pms_secondary_color', '#0f172a'))
         );
     }
 

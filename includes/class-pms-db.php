@@ -41,6 +41,12 @@ class PMS_DB
         return $wpdb->prefix . 'pms_attendance_records';
     }
 
+    public static function leave_table(): string
+    {
+        global $wpdb;
+        return $wpdb->prefix . 'pms_leave_requests';
+    }
+
     public static function user_branches_table(): string
     {
         global $wpdb;
@@ -74,6 +80,7 @@ class PMS_DB
         $departments = self::departments_table();
         $tasks = self::tasks_table();
         $attendance = self::attendance_table();
+        $leave = self::leave_table();
         $user_branches = self::user_branches_table();
         $attachments = self::attachments_table();
         $comments = self::comments_table();
@@ -144,6 +151,25 @@ CREATE TABLE {$attendance} (
     PRIMARY KEY  (id),
     KEY user_id (user_id),
     KEY clock_in (clock_in)
+) {$charset_collate};
+
+CREATE TABLE {$leave} (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NOT NULL,
+    leave_type VARCHAR(64) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    days DECIMAL(6,2) NOT NULL DEFAULT 0,
+    reason TEXT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    reviewed_by BIGINT UNSIGNED NULL,
+    reviewed_at DATETIME NULL,
+    created_at DATETIME NULL,
+    updated_at DATETIME NULL,
+    PRIMARY KEY  (id),
+    KEY user_id (user_id),
+    KEY status (status),
+    KEY start_date (start_date)
 ) {$charset_collate};
 
 CREATE TABLE {$user_branches} (
@@ -485,6 +511,88 @@ CREATE TABLE {$comments} (
     {
         global $wpdb;
         $wpdb->delete(self::comments_table(), ['task_id' => $task_id]);
+    }
+
+    // ---- Leave requests ----
+
+    public static function create_leave_request(array $data): int
+    {
+        global $wpdb;
+        $wpdb->insert(self::leave_table(), [
+            'user_id' => (int) $data['user_id'],
+            'leave_type' => $data['leave_type'],
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+            'days' => (float) $data['days'],
+            'reason' => $data['reason'],
+            'status' => 'pending',
+            'created_at' => current_time('mysql'),
+            'updated_at' => current_time('mysql'),
+        ]);
+        return (int) $wpdb->insert_id;
+    }
+
+    public static function get_leave_requests(array $filters = []): array
+    {
+        global $wpdb;
+        $where = ['1=1'];
+        $params = [];
+
+        if (! empty($filters['user_id'])) {
+            $where[] = 'l.user_id = %d';
+            $params[] = (int) $filters['user_id'];
+        }
+        if (! empty($filters['status'])) {
+            $where[] = 'l.status = %s';
+            $params[] = $filters['status'];
+        }
+        if (! empty($filters['leave_type'])) {
+            $where[] = 'l.leave_type = %s';
+            $params[] = $filters['leave_type'];
+        }
+        if (! empty($filters['from'])) {
+            $where[] = 'l.start_date >= %s';
+            $params[] = $filters['from'];
+        }
+        if (! empty($filters['to'])) {
+            $where[] = 'l.end_date <= %s';
+            $params[] = $filters['to'];
+        }
+
+        $sql = 'SELECT l.*, u.display_name AS user_name
+                FROM ' . self::leave_table() . ' l
+                LEFT JOIN ' . $wpdb->users . ' u ON u.ID = l.user_id
+                WHERE ' . implode(' AND ', $where) . '
+                ORDER BY l.created_at DESC';
+
+        return $params ? $wpdb->get_results($wpdb->prepare($sql, ...$params)) : $wpdb->get_results($sql);
+    }
+
+    public static function get_leave_request(int $id): ?object
+    {
+        global $wpdb;
+        return $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::leave_table() . ' WHERE id = %d', $id)) ?: null;
+    }
+
+    public static function update_leave_status(int $id, string $status, int $reviewed_by): bool
+    {
+        global $wpdb;
+        return false !== $wpdb->update(self::leave_table(), [
+            'status' => $status,
+            'reviewed_by' => $reviewed_by,
+            'reviewed_at' => current_time('mysql'),
+            'updated_at' => current_time('mysql'),
+        ], ['id' => $id]);
+    }
+
+    public static function leave_types(): array
+    {
+        return [
+            'annual' => __('Annual', 'pms'),
+            'sick' => __('Sick', 'pms'),
+            'personal' => __('Personal', 'pms'),
+            'unpaid' => __('Unpaid', 'pms'),
+        ];
     }
 
     // ---- Branches: full CRUD ----

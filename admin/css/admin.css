@@ -991,6 +991,21 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
 .pms-shell.pms-workspace-staff 
 
 
+/* Staff workspace uses the same supplied Admin shell design, with the
+   reference's orange Staff navigation/identity accent. */
+.pms-shell.pms-workspace-staff:has(.pms-exact-dashboard) .pms-brand-mark{
+    background:linear-gradient(135deg,#ea580c,#f59e0b);
+    color:#fff;
+}
+.pms-shell.pms-workspace-staff:has(.pms-exact-dashboard) .pms-nav-item.is-active{
+    background:linear-gradient(90deg,#FF5722 0%,#E64A19 100%);
+    box-shadow:0 4px 14px rgba(255,87,34,.35);
+    color:#fff;
+}
+.pms-shell.pms-workspace-staff:has(.pms-exact-dashboard) .pms-nav-item.is-active .dashicons{
+    color:#fff;
+}
+
 /* ===========================================================
    Exact visual implementation of the supplied Cities Builder
    workspace dashboard HTML. Dashboard-only; production data

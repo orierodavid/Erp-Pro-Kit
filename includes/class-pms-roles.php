@@ -172,6 +172,157 @@ class PMS_Roles
         }
     }
 
+    /**
+     * Single capability catalogue used by the Roles & Permissions screen.
+     * Keeping this in one place prevents the UI from inventing capability names.
+     */
+    public static function capability_catalogue(): array
+    {
+        return [
+            'People' => [
+                'pms_manage_users' => __('Manage people', 'pms'),
+                'pms_manage_departments' => __('Manage departments', 'pms'),
+                'pms_manage_branches' => __('Manage branches', 'pms'),
+            ],
+            'Workforce' => [
+                'pms_manage_hr' => __('Manage HR records', 'pms'),
+                'pms_clock_in_out' => __('Clock in / out', 'pms'),
+                'pms_view_attendance' => __('View attendance', 'pms'),
+                'pms_view_all_attendance' => __('View all attendance', 'pms'),
+                'pms_manage_leave' => __('Manage leave', 'pms'),
+            ],
+            'Work' => [
+                'pms_manage_tasks' => __('Manage all tasks', 'pms'),
+                'pms_view_assigned_tasks' => __('View assigned tasks', 'pms'),
+                'pms_update_own_tasks' => __('Update own tasks', 'pms'),
+                'pms_comment_on_tasks' => __('Comment on tasks', 'pms'),
+                'pms_upload_attachments' => __('Upload task attachments', 'pms'),
+                'pms_view_reports' => __('View reports', 'pms'),
+            ],
+            'Finance' => [
+                'pms_manage_payroll' => __('Manage payroll', 'pms'),
+                'pms_manage_invoices' => __('Manage invoices', 'pms'),
+                'pms_manage_expenses' => __('Manage expenses', 'pms'),
+            ],
+            'Sales & Real Estate' => [
+                'pms_manage_crm' => __('Manage CRM', 'pms'),
+                'pms_view_real_estate' => __('View real estate', 'pms'),
+                'pms_manage_real_estate' => __('Manage real estate', 'pms'),
+            ],
+            'System' => [
+                'pms_manage_settings' => __('Manage settings', 'pms'),
+            ],
+        ];
+    }
+
+    public static function capability_labels(): array
+    {
+        $labels = [];
+        foreach (self::capability_catalogue() as $group) {
+            $labels = array_merge($labels, $group);
+        }
+        return $labels;
+    }
+
+    public static function role_label(string $role_slug): string
+    {
+        if ($role_slug === 'administrator') {
+            return __('Administrator', 'pms');
+        }
+        if ($role_slug === self::ADMIN_ROLE) {
+            return __('PMS Admin', 'pms');
+        }
+        if ($role_slug === self::STAFF_ROLE) {
+            return __('Staff / Employee', 'pms');
+        }
+        $roles = self::erp_roles();
+        if (isset($roles[$role_slug])) {
+            return $roles[$role_slug]['label'];
+        }
+        $wp_roles = wp_roles();
+        return isset($wp_roles->roles[$role_slug]) ? translate_user_role($wp_roles->roles[$role_slug]['name']) : $role_slug;
+    }
+
+    public static function managed_role_slugs(): array
+    {
+        return array_merge([self::ADMIN_ROLE, self::STAFF_ROLE], array_keys(self::erp_roles()));
+    }
+
+    public static function role_definitions_for_ui(): array
+    {
+        $definitions = [];
+        foreach (self::managed_role_slugs() as $slug) {
+            $role = get_role($slug);
+            if ($role) {
+                $definitions[$slug] = [
+                    'label' => self::role_label($slug),
+                    'caps' => $role->capabilities,
+                    'built_in' => true,
+                ];
+            }
+        }
+        foreach (wp_roles()->roles as $slug => $definition) {
+            if (strpos($slug, 'pms_custom_') === 0) {
+                $role = get_role($slug);
+                if ($role) {
+                    $definitions[$slug] = [
+                        'label' => translate_user_role($definition['name']),
+                        'caps' => $role->capabilities,
+                        'built_in' => false,
+                    ];
+                }
+            }
+        }
+        return $definitions;
+    }
+
+    public static function save_role_capabilities(string $slug, array $caps): bool
+    {
+        $role = get_role($slug);
+        if (! $role) {
+            return false;
+        }
+
+        $allowed = array_keys(self::capability_labels());
+        $selected = array_values(array_intersect($allowed, $caps));
+
+        foreach ($allowed as $cap) {
+            if (in_array($cap, $selected, true)) {
+                $role->add_cap($cap);
+            } else {
+                $role->remove_cap($cap);
+            }
+        }
+        $role->add_cap('read');
+        return true;
+    }
+
+    public static function create_custom_role(string $name, array $caps): string
+    {
+        $slug_base = sanitize_title($name);
+        $slug = 'pms_custom_' . ($slug_base ?: 'role');
+        $i = 2;
+        while (get_role($slug)) {
+            $slug = 'pms_custom_' . ($slug_base ?: 'role') . '_' . $i;
+            $i++;
+        }
+        $role = add_role($slug, $name, ['read' => true]);
+        if (! $role) {
+            return '';
+        }
+        self::save_role_capabilities($slug, $caps);
+        return $slug;
+    }
+
+    public static function delete_custom_role(string $slug): bool
+    {
+        if (strpos($slug, 'pms_custom_') !== 0 || ! get_role($slug)) {
+            return false;
+        }
+        remove_role($slug);
+        return true;
+    }
+
     /** Convenience check used throughout the plugin instead of role-name string matching. */
     public static function current_user_is_pms_admin(): bool
     {

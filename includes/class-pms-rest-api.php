@@ -32,7 +32,7 @@ class PMS_REST_API
         register_rest_route(self::NAMESPACE, '/attendance/clock-in', [
             'methods' => 'POST',
             'callback' => [$this, 'attendance_clock_in'],
-            'permission_callback' => fn () => current_user_can('pms_clock_in_out'),
+            'permission_callback' => fn () => PMS_Modules::is_active('attendance') && current_user_can('pms_clock_in_out'),
             'args' => [
                 'lat' => ['required' => false, 'type' => 'number'],
                 'lng' => ['required' => false, 'type' => 'number'],

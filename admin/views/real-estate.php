@@ -1,9 +1,10 @@
 <?php
 if (! defined('ABSPATH')) { exit; }
 if (! current_user_can('pms_manage_real_estate')) { wp_die(__('You do not have permission to view this page.', 'pms')); }
+wp_enqueue_media();
 
 $tab = isset($_GET['tab']) ? sanitize_key(wp_unslash($_GET['tab'])) : 'overview';
-$allowed_tabs = ['overview','properties','listings','contacts','transactions','leases','commissions','reports'];
+$allowed_tabs = ['overview','properties','listings','contacts','transactions','leases','commissions','communications','reports'];
 if (! in_array($tab,$allowed_tabs,true)) $tab='overview';
 
 if ($_SERVER['REQUEST_METHOD']==='POST') {
@@ -27,6 +28,22 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
         $id=absint($_POST['entity_id'] ?? 0);
         if ($id) PMS_Real_Estate::delete($type,$id);
         echo '<div class="pms-notice pms-notice-success">'.esc_html__('Record deleted.','pms').'</div>';
+    } elseif ($action==='send_email') {
+        $recipient_type=sanitize_key(wp_unslash($_POST['recipient_type'] ?? ''));
+        $recipient_id=absint($_POST['recipient_id'] ?? 0);
+        $to='';
+        if ($recipient_type==='tenant' && $recipient_id) {
+            global $wpdb;
+            $recipient=$wpdb->get_row($wpdb->prepare("SELECT email FROM ".PMS_Real_Estate::table_name('tenants')." WHERE id=%d",$recipient_id));
+            $to=$recipient ? sanitize_email($recipient->email) : '';
+        } elseif ($recipient_type==='staff' && $recipient_id) {
+            $user=get_userdata($recipient_id);
+            $to=$user ? sanitize_email($user->user_email) : '';
+        } elseif ($recipient_type==='custom') {
+            $to=sanitize_email(wp_unslash($_POST['recipient_email'] ?? ''));
+        }
+        $sent=PMS_Real_Estate::send_email($to, wp_unslash($_POST['subject'] ?? ''), wp_unslash($_POST['message'] ?? ''));
+        echo $sent ? '<div class="pms-notice pms-notice-success">Email submitted to the WordPress mail transport.</div>' : '<div class="pms-notice pms-notice-error">Email could not be submitted. Check the recipient, WordPress mail configuration, and server/SMTP transport.</div>';
     }
 }
 
@@ -101,17 +118,17 @@ function pms_re_select(string $name,array $rows,string $label): void {
         <div class="pms-panel pms-form-panel">
             <div class="pms-section-head"><div><h2>Add property</h2><p>Property master records are the foundation for listings and transactions.</p></div></div>
             <form method="post"><?php wp_nonce_field('pms_real_estate_manage','pms_real_estate_nonce'); ?><input type="hidden" name="pms_re_action" value="save_properties"><input type="hidden" name="redirect_tab" value="properties">
-                <div class="pms-form-grid"><div class="pms-form-row"><label>Property code</label><input class="pms-input" name="property_code" placeholder="Auto-generated if blank"></div><div class="pms-form-row"><label>Property title</label><input class="pms-input" name="title" required></div><?php pms_re_select('property_type_id',$types,'Property type'); ?><?php pms_re_select('location_id',$locations,'Location'); ?><?php pms_re_select('owner_id',$owners,'Property owner'); ?><div class="pms-form-row"><label>Status</label><select class="pms-input" name="status"><option value="available">Available</option><option value="reserved">Reserved</option><option value="sold">Sold</option><option value="rented">Rented</option><option value="inactive">Inactive</option></select></div><div class="pms-form-row"><label>Bedrooms</label><input class="pms-input" type="number" min="0" name="bedrooms" value="0"></div><div class="pms-form-row"><label>Bathrooms</label><input class="pms-input" type="number" min="0" name="bathrooms" value="0"></div><div class="pms-form-row"><label>Area</label><input class="pms-input" type="number" min="0" step="0.01" name="area" value="0"></div><div class="pms-form-row"><label>Area unit</label><input class="pms-input" name="area_unit" value="sqm"></div></div>
+                <div class="pms-form-grid"><div class="pms-form-row"><label>Property code</label><input class="pms-input" name="property_code" placeholder="Auto-generated if blank"></div><div class="pms-form-row"><label>Property title</label><input class="pms-input" name="title" required></div><div class="pms-form-row pms-re-image-field"><label>Property image</label><input type="hidden" name="featured_image_id" id="pms-re-featured-image-id"><div class="pms-re-image-picker"><div id="pms-re-image-preview" class="pms-re-image-preview"><span class="dashicons dashicons-format-image"></span><span>No image selected</span></div><button type="button" class="pms-btn" id="pms-re-select-image">Choose image</button><button type="button" class="pms-btn pms-btn-danger" id="pms-re-remove-image" style="display:none">Remove</button></div></div><?php pms_re_select('property_type_id',$types,'Property type'); ?><?php pms_re_select('location_id',$locations,'Location'); ?><?php pms_re_select('owner_id',$owners,'Property owner'); ?><div class="pms-form-row"><label>Status</label><select class="pms-input" name="status"><option value="available">Available</option><option value="reserved">Reserved</option><option value="sold">Sold</option><option value="rented">Rented</option><option value="inactive">Inactive</option></select></div><div class="pms-form-row"><label>Bedrooms</label><input class="pms-input" type="number" min="0" name="bedrooms" value="0"></div><div class="pms-form-row"><label>Bathrooms</label><input class="pms-input" type="number" min="0" name="bathrooms" value="0"></div><div class="pms-form-row"><label>Area</label><input class="pms-input" type="number" min="0" step="0.01" name="area" value="0"></div><div class="pms-form-row"><label>Area unit</label><input class="pms-input" name="area_unit" value="sqm"></div></div>
                 <div class="pms-form-row"><label>Description</label><textarea class="pms-input" name="description" rows="3"></textarea></div><button class="pms-btn-primary" type="submit">Save property</button>
             </form>
         </div>
-        <div class="pms-panel"><div class="pms-panel-heading"><h2>Properties</h2><span><?php echo esc_html(count($properties)); ?> records</span></div><table class="pms-table"><thead><tr><th>Code</th><th>Property</th><th>Type</th><th>Location</th><th>Owner</th><th>Details</th><th>Status</th></tr></thead><tbody><?php foreach($properties as $p): ?><tr><td><strong><?php echo esc_html($p->property_code); ?></strong></td><td><?php echo esc_html($p->title); ?></td><td><?php echo esc_html($p->property_type?:'—'); ?></td><td><?php echo esc_html($p->location_name?:'—'); ?></td><td><?php echo esc_html($p->owner_name?:'—'); ?></td><td><?php echo esc_html($p->bedrooms.' bd · '.$p->bathrooms.' ba · '.$p->area.' '.$p->area_unit); ?></td><td><span class="pms-chip"><?php echo esc_html(ucfirst($p->status)); ?></span></td></tr><?php endforeach; if(!$properties): ?><tr><td colspan="7" class="pms-empty">No properties yet.</td></tr><?php endif; ?></tbody></table></div>
+        <div class="pms-panel"><div class="pms-panel-heading"><h2>Properties</h2><span><?php echo esc_html(count($properties)); ?> records</span></div><table class="pms-table"><thead><tr><th>Image</th><th>Code</th><th>Property</th><th>Type</th><th>Location</th><th>Owner</th><th>Details</th><th>Status</th></tr></thead><tbody><?php foreach($properties as $p): ?><tr><td><?php if(!empty($p->featured_image_id)): ?><img class="pms-re-table-thumb" src="<?php echo esc_url(wp_get_attachment_image_url((int)$p->featured_image_id,'thumbnail')); ?>" alt=""><?php else: ?><span class="pms-re-table-placeholder"><span class="dashicons dashicons-format-image"></span></span><?php endif; ?></td><td><strong><?php echo esc_html($p->property_code); ?></strong></td><td><?php echo esc_html($p->title); ?></td><td><?php echo esc_html($p->property_type?:'—'); ?></td><td><?php echo esc_html($p->location_name?:'—'); ?></td><td><?php echo esc_html($p->owner_name?:'—'); ?></td><td><?php echo esc_html($p->bedrooms.' bd · '.$p->bathrooms.' ba · '.$p->area.' '.$p->area_unit); ?></td><td><span class="pms-chip"><?php echo esc_html(ucfirst($p->status)); ?></span></td></tr><?php endforeach; if(!$properties): ?><tr><td colspan="8" class="pms-empty">No properties yet.</td></tr><?php endif; ?></tbody></table></div>
     <?php endif; ?>
 
     <?php if($tab==='listings'): ?>
         <div class="pms-panel pms-form-panel"><div class="pms-section-head"><div><h2>Property listings</h2><p>Publish a property for sale or rent and assign an agent.</p></div></div>
         <form method="post"><?php wp_nonce_field('pms_real_estate_manage','pms_real_estate_nonce'); ?><input type="hidden" name="pms_re_action" value="save_listings"><input type="hidden" name="redirect_tab" value="listings"><div class="pms-form-grid"><?php pms_re_select('property_id',$properties,'Property'); ?><div class="pms-form-row"><label>Listing type</label><select class="pms-input" name="listing_type"><option value="sale">Sale</option><option value="rent">Rent</option></select></div><div class="pms-form-row"><label>Price</label><input class="pms-input" type="number" min="0" step="0.01" name="price" value="0"></div><div class="pms-form-row"><label>Currency</label><input class="pms-input" name="currency" value="NGN"></div><div class="pms-form-row"><label>Agent</label><select class="pms-input" name="agent_id"><option value="">Unassigned</option><?php foreach($agents as $a): ?><option value="<?php echo esc_attr($a->ID); ?>"><?php echo esc_html($a->display_name); ?></option><?php endforeach; ?></select></div><div class="pms-form-row"><label>Status</label><select class="pms-input" name="status"><option value="active">Active</option><option value="paused">Paused</option><option value="closed">Closed</option></select></div><div class="pms-form-row"><label>Listed at</label><input class="pms-input" type="datetime-local" name="listed_at"></div></div><div class="pms-form-row"><label>Notes</label><textarea class="pms-input" name="notes" rows="2"></textarea></div><button class="pms-btn-primary" type="submit">Create listing</button></form></div>
-        <div class="pms-panel"><div class="pms-panel-heading"><h2>Listings</h2></div><table class="pms-table"><thead><tr><th>Property</th><th>Type</th><th>Price</th><th>Status</th><th>Listed</th></tr></thead><tbody><?php foreach($listings as $x): ?><tr><td><strong><?php echo esc_html($x->property_code); ?></strong> · <?php echo esc_html($x->property_title); ?></td><td><?php echo esc_html(ucfirst($x->listing_type)); ?></td><td><?php echo esc_html($x->currency.' '.number_format((float)$x->price,2)); ?></td><td><?php echo esc_html(ucfirst($x->status)); ?></td><td><?php echo esc_html($x->listed_at?:'—'); ?></td></tr><?php endforeach; if(!$listings): ?><tr><td colspan="5" class="pms-empty">No listings yet.</td></tr><?php endif; ?></tbody></table></div>
+        <div class="pms-panel"><div class="pms-panel-heading"><h2>Listings</h2></div><div class="pms-re-listing-grid"><?php foreach($listings as $x): ?><article class="pms-re-listing-card"><div class="pms-re-listing-image"><?php $img_id=0; foreach($properties as $p) { if((int)$p->id===(int)$x->property_id) { $img_id=(int)$p->featured_image_id; break; } } if($img_id): ?><img src="<?php echo esc_url(wp_get_attachment_image_url($img_id,'medium')); ?>" alt="<?php echo esc_attr($x->property_title); ?>"><?php else: ?><span class="dashicons dashicons-building"></span><?php endif; ?><span class="pms-re-listing-type"><?php echo esc_html(ucfirst($x->listing_type)); ?></span></div><div class="pms-re-listing-body"><div><span class="pms-re-listing-code"><?php echo esc_html($x->property_code); ?></span><h3><?php echo esc_html($x->property_title); ?></h3></div><div class="pms-re-listing-price"><?php echo esc_html($x->currency); ?> <?php echo esc_html(number_format((float)$x->price,2)); ?></div><div class="pms-re-listing-meta"><span><?php echo esc_html(ucfirst($x->status)); ?></span><span><?php echo esc_html($x->listed_at?:'Not dated'); ?></span></div></div></article><?php endforeach; if(!$listings): ?><div class="pms-empty">No listings yet.</div><?php endif; ?></div></div>
     <?php endif; ?>
 
     <?php if($tab==='contacts'): ?>
@@ -141,9 +158,43 @@ function pms_re_select(string $name,array $rows,string $label): void {
         <div class="pms-panel"><table class="pms-table"><thead><tr><th>Agent</th><th>Property</th><th>Basis</th><th>Rate</th><th>Commission</th><th>Status</th></tr></thead><tbody><?php foreach($commissions as $x): ?><tr><td><?php echo esc_html($x->agent_name?:'—'); ?></td><td><?php echo esc_html($x->property_title?:'—'); ?></td><td><?php echo esc_html($x->currency.' '.number_format((float)$x->basis_amount,2)); ?></td><td><?php echo esc_html(number_format((float)$x->rate,2).'%'); ?></td><td><?php echo esc_html($x->currency.' '.number_format((float)$x->commission_amount,2)); ?></td><td><?php echo esc_html(ucfirst($x->status)); ?></td></tr><?php endforeach; if(!$commissions): ?><tr><td colspan="6" class="pms-empty">No commissions yet.</td></tr><?php endif; ?></tbody></table></div>
     <?php endif; ?>
 
+    <?php if($tab==='communications'): ?>
+        <div class="pms-real-estate-grid">
+            <div class="pms-panel pms-form-panel">
+                <div class="pms-section-head"><div><h2>Send communication</h2><p>Send a direct email to a tenant, staff member, or another verified address.</p></div></div>
+                <form method="post">
+                    <?php wp_nonce_field('pms_real_estate_manage','pms_real_estate_nonce'); ?>
+                    <input type="hidden" name="pms_re_action" value="send_email"><input type="hidden" name="redirect_tab" value="communications">
+                    <div class="pms-form-grid">
+                        <div class="pms-form-row"><label>Recipient type</label><select class="pms-input" name="recipient_type" id="pms-re-recipient-type"><option value="tenant">Tenant</option><option value="staff">Staff</option><option value="custom">Email address</option></select></div>
+                        <div class="pms-form-row" id="pms-re-recipient-select"><label>Recipient</label><select class="pms-input" name="recipient_id"><option value="">Select recipient</option><?php foreach($tenants as $x): if(!empty($x->email)): ?><option data-type="tenant" value="<?php echo esc_attr($x->id); ?>"><?php echo esc_html($x->name.' — '.$x->email); ?></option><?php endif; endforeach; ?><?php foreach($agents as $a): if(!empty($a->user_email)): ?><option data-type="staff" value="<?php echo esc_attr($a->ID); ?>"><?php echo esc_html($a->display_name.' — '.$a->user_email); ?></option><?php endif; endforeach; ?></select></div>
+                        <div class="pms-form-row" id="pms-re-custom-email" style="display:none"><label>Email address</label><input class="pms-input" type="email" name="recipient_email" placeholder="name@example.com"></div>
+                        <div class="pms-form-row"><label>Subject</label><input class="pms-input" name="subject" required></div>
+                    </div>
+                    <div class="pms-form-row"><label>Message</label><textarea class="pms-input" name="message" rows="8" required></textarea></div>
+                    <button class="pms-btn-primary" type="submit"><span class="dashicons dashicons-email-alt"></span> Send email</button>
+                </form>
+            </div>
+            <div class="pms-panel pms-form-panel">
+                <div class="pms-section-head"><div><h2>Email delivery</h2><p>WordPress hands mail to the site's configured mail transport.</p></div></div>
+                <div class="pms-re-email-check"><span class="dashicons dashicons-admin-email"></span><div><strong>Site email</strong><p><?php echo esc_html(get_option('admin_email')); ?></p></div></div>
+                <p class="pms-page-description">For production delivery, configure a reliable SMTP or transactional mail service on the WordPress site. The ERP sends through <code>wp_mail()</code>.</p>
+                <a class="pms-btn" href="<?php echo esc_url(admin_url('options-general.php')); ?>">Open WordPress settings</a>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <?php if($tab==='reports'): ?>
         <div class="pms-kpi-grid"><div class="pms-kpi"><span class="pms-kpi-label">Viewings</span><strong><?php echo esc_html($summary->viewings); ?></strong></div><div class="pms-kpi"><span class="pms-kpi-label">Offers</span><strong><?php echo esc_html($summary->offers); ?></strong></div><div class="pms-kpi"><span class="pms-kpi-label">Sales</span><strong><?php echo esc_html($summary->sales); ?></strong></div><div class="pms-kpi"><span class="pms-kpi-label">Rentals</span><strong><?php echo esc_html($summary->rentals); ?></strong></div><div class="pms-kpi"><span class="pms-kpi-label">Leases</span><strong><?php echo esc_html($summary->leases); ?></strong></div><div class="pms-kpi"><span class="pms-kpi-label">Commissions</span><strong><?php echo esc_html($summary->commissions); ?></strong></div></div>
         <div class="pms-panel"><div class="pms-panel-heading"><h2>Property reports</h2><span>Live totals from stored real-estate records.</span></div><table class="pms-table"><tbody><tr><th>Properties</th><td><?php echo esc_html($summary->properties); ?></td></tr><tr><th>Listings</th><td><?php echo esc_html($summary->listings); ?></td></tr><tr><th>Buyers</th><td><?php echo esc_html($summary->buyers); ?></td></tr><tr><th>Tenants</th><td><?php echo esc_html($summary->tenants); ?></td></tr><tr><th>Viewings</th><td><?php echo esc_html($summary->viewings); ?></td></tr><tr><th>Offers</th><td><?php echo esc_html($summary->offers); ?></td></tr><tr><th>Completed sales value</th><td><?php echo esc_html(number_format($summary->sales_value,2)); ?></td></tr><tr><th>Commission outstanding</th><td><?php echo esc_html(number_format($summary->commission_due,2)); ?></td></tr></tbody></table></div>
     <?php endif; ?>
 </div>
+<script>
+jQuery(function($){
+ var frame;
+ $('#pms-re-select-image').on('click',function(e){e.preventDefault();if(frame){frame.open();return;}frame=wp.media({title:'Select property image',button:{text:'Use image'},multiple:false,library:{type:'image'}});frame.on('select',function(){var a=frame.state().get('selection').first().toJSON();$('#pms-re-featured-image-id').val(a.id);var u=(a.sizes&&a.sizes.medium)?a.sizes.medium.url:(a.url||'');$('#pms-re-image-preview').html(u?'<img src="'+u.replace(/"/g,'&quot;')+'" alt=""><span>Selected image</span>':'<span class="dashicons dashicons-format-image"></span><span>No image selected</span>');$('#pms-re-remove-image').show();});frame.open();});
+ $('#pms-re-remove-image').on('click',function(){$('#pms-re-featured-image-id').val('');$('#pms-re-image-preview').html('<span class="dashicons dashicons-format-image"></span><span>No image selected</span>');$(this).hide();});
+ $('#pms-re-recipient-type').on('change',function(){var t=$(this).val();$('#pms-re-recipient-select').toggle(t!=='custom');$('#pms-re-custom-email').toggle(t==='custom');$('#pms-re-recipient-select option[data-type]').each(function(){$(this).toggle($(this).data('type')===t);});$('#pms-re-recipient-select select').val('');}).trigger('change');
+});
+</script>
 <?php include PMS_PLUGIN_DIR.'admin/views/partials/footer.php'; ?>

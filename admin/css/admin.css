@@ -1184,3 +1184,32 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
 .pms-re-email-check strong{display:block;color:#0F172A;font-size:13px}
 .pms-re-email-check p{margin:3px 0 0;color:#64748B;font-size:12px}
 @media(max-width:760px){.pms-re-listing-grid{grid-template-columns:1fr}.pms-re-listing-image{height:210px}.pms-re-image-preview{width:100%;height:150px}}
+
+/* Invoice Studio */
+.pms-invoice-builder{border:1px solid #dfe6f1;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 12px 32px rgba(15,23,42,.06)}
+.pms-invoice-builder-head{display:flex;justify-content:space-between;gap:24px;padding:24px 26px;background:linear-gradient(135deg,#07122f 0%,#12295c 100%);color:#fff}
+.pms-invoice-eyebrow{font-size:10px;letter-spacing:.16em;font-weight:800;color:#8fb7ff}
+.pms-invoice-builder-head h3{margin:7px 0 4px;font-size:22px;color:#fff}
+.pms-invoice-builder-head p{margin:0;color:#cbd5e1}
+.pms-invoice-number-badge{min-width:150px;padding:12px 14px;border:1px solid rgba(255,255,255,.15);border-radius:12px;background:rgba(255,255,255,.06);font-size:11px;color:#b8c5dc;text-align:right}
+.pms-invoice-number-badge strong{display:block;margin-top:4px;color:#fff;font-size:14px}
+.pms-invoice-builder>.pms-form-grid,.pms-invoice-builder>.pms-form-field{padding-left:26px;padding-right:26px}
+.pms-invoice-check{display:flex!important;align-items:center;gap:10px;padding:10px 12px;background:#f7f9fc;border:1px solid #e1e7f0;border-radius:10px}
+.pms-invoice-check input{width:18px;height:18px}
+.pms-invoice-check span{display:flex;flex-direction:column;gap:2px}
+.pms-invoice-check small{color:#64748b;line-height:1.4}
+.pms-invoice-builder-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 26px;background:#f8fafc;border-top:1px solid #e5eaf2}
+.pms-invoice-builder-footer>span{font-size:12px;color:#64748b}
+.pms-invoice-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pms-invoice-actions .pms-inline-form{margin:0}
+.pms-invoice-actions .pms-btn{white-space:nowrap}
+.pms-invoice-tabs{margin-bottom:18px}
+.pms-invoice-tabs a{gap:7px}
+.pms-invoice-kpis .pms-kpi-card{min-height:110px}
+.pms-invoice-total{font-size:20px;color:#2563eb}
+@media(max-width:800px){
+ .pms-invoice-builder-head{flex-direction:column}
+ .pms-invoice-number-badge{text-align:left}
+ .pms-invoice-builder-footer{align-items:flex-start;flex-direction:column}
+ .pms-invoice-actions{flex-direction:column;align-items:stretch}
+}

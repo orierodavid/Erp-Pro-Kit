@@ -89,6 +89,27 @@ class PMS_CSV_Export
         exit;
     }
 
+    public function export_people_report(): void
+    {
+        if (! current_user_can('pms_manage_users')) {
+            wp_die(__('You do not have permission to do this.', 'pms'));
+        }
+        check_admin_referer('pms_export_people_report_action');
+        $rows = PMS_Roles::get_pms_people();
+        nocache_headers();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="people-report.csv"');
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        fputcsv($out, [__('Name', 'pms'), __('Email', 'pms'), __('Role', 'pms')]);
+        foreach ($rows as $person) {
+            $role = ! empty($person->roles) ? reset($person->roles) : '';
+            fputcsv($out, [$person->display_name, $person->user_email, PMS_Roles::role_label($role)]);
+        }
+        fclose($out);
+        exit;
+    }
+
     public function export_leave_report(): void
     {
         if (! current_user_can('pms_request_leave') && ! current_user_can('pms_manage_leave')) {

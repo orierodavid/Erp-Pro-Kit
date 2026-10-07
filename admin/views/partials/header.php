@@ -110,6 +110,9 @@ $pms_visible_system = array_filter($pms_system_items, fn ($item) => current_user
 
     <div class="pms-shell-body">
         <header class="pms-shell-topbar">
+            <button type="button" class="pms-mobile-menu-toggle" aria-label="<?php esc_attr_e('Open navigation', 'pms'); ?>" aria-expanded="false">
+                <span class="dashicons dashicons-menu"></span>
+            </button>
             <div class="pms-topbar-title">
                 <?php
                 $pms_page_titles = array_merge($pms_nav_items, $pms_org_items, $pms_system_items, [

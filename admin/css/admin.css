@@ -1105,3 +1105,22 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
 .pms-report-bars b{display:block;height:9px;border-radius:999px;background:#2563EB;min-width:2px}
 .pms-report-bars strong{text-align:right;color:#0F172A}
 @media(max-width:760px){.pms-project-assign-form{grid-template-columns:1fr}.pms-report-bars>div{grid-template-columns:80px 1fr 35px}}
+
+/* ===========================================================
+   Invoicing workspace
+   =========================================================== */
+.pms-invoice-kpis{margin-bottom:20px}
+.pms-invoice-kpis .pms-kpi-card{min-height:118px}
+.pms-invoice-kpis .pms-kpi-card>span{font-size:20px;color:#2563EB}
+.pms-invoice-quick{margin-top:20px}
+.pms-invoice-quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pms-invoice-quick-grid .pms-btn{justify-content:center;text-decoration:none}
+.pms-invoice-items{margin:18px 0}
+.pms-invoice-items-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;color:#0F172A;font-size:13px}
+.pms-invoice-items-head .pms-btn{display:inline-flex;align-items:center;gap:5px}
+.pms-invoice-item-list{display:grid;gap:8px}
+.pms-invoice-item{display:grid;grid-template-columns:minmax(0,2fr) 120px 150px auto;gap:8px;align-items:center}
+.pms-invoice-total{font-size:18px;color:#0F172A}
+.pms-btn-danger{color:#B91C1C;background:#FEF2F2;border-color:#FECACA}
+.pms-invoicing .pms-status{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#F1F5F9;color:#475569;font-size:11px;font-weight:700}
+@media(max-width:760px){.pms-invoice-quick-grid{grid-template-columns:1fr}.pms-invoice-item{grid-template-columns:1fr}.pms-invoice-tabs{overflow:auto;flex-wrap:nowrap}.pms-invoice-tabs a{white-space:nowrap}}

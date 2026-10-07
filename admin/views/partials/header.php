@@ -25,6 +25,7 @@ $pms_nav_items = [
     ['slug' => 'pms-leave', 'label' => __('Leave', 'pms'), 'icon' => 'dashicons-airplane', 'cap' => 'pms_request_leave', 'module' => 'leave'],
     ['slug' => 'pms-my-account', 'label' => __('My Profile', 'pms'), 'icon' => 'dashicons-admin-users', 'cap' => 'read'],
     ['slug' => 'pms-crm', 'label' => __('CRM / Sales', 'pms'), 'icon' => 'dashicons-chart-area', 'cap' => 'pms_manage_crm', 'module' => 'crm'],
+    ['slug' => 'pms-invoicing', 'label' => __('Invoicing', 'pms'), 'icon' => 'dashicons-media-text', 'cap' => 'pms_manage_invoices', 'module' => 'invoicing'],
 ];
 
 $pms_org_items = [

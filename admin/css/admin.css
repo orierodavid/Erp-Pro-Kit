@@ -1135,3 +1135,7 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
 .pms-expenses .pms-status{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#F1F5F9;color:#475569;font-size:11px;font-weight:700}
 .pms-expenses .pms-btn-danger{border:1px solid #FECACA}
 @media(max-width:760px){.pms-expense-tabs{overflow:auto;flex-wrap:nowrap}.pms-expense-tabs a{white-space:nowrap}}
+
+
+/* Inventory workspace */
+.pms-inventory-kpis{margin-bottom:20px}.pms-inventory-tabs{margin-bottom:20px}.pms-inventory-low{background:#FEF2F2!important;color:#B91C1C!important}.pms-inventory .pms-table td,.pms-inventory .pms-table th{vertical-align:middle}@media(max-width:760px){.pms-inventory-tabs{overflow:auto;flex-wrap:nowrap}.pms-inventory-tabs a{white-space:nowrap}}

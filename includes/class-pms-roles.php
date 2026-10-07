@@ -206,6 +206,7 @@ class PMS_Roles
                 'pms_manage_payroll' => __('Manage payroll', 'pms'),
                 'pms_manage_invoices' => __('Manage invoices', 'pms'),
                 'pms_manage_expenses' => __('Manage expenses', 'pms'),
+                'pms_manage_inventory' => __('Manage inventory', 'pms'),
                 'pms_submit_expenses' => __('Submit expenses', 'pms'),
             ],
             'Sales & Real Estate' => [

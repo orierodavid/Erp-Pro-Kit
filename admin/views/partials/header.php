@@ -74,7 +74,7 @@ foreach ($pms_page_titles as $item) {
                 }
                 ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=' . $item['slug'])); ?>"
-                   class="pms-nav-item <?php echo $pms_current_page === $item['slug'] ? 'is-active' : ''; ?>"
+                   class="pms-nav-item <?php echo ($pms_current_page === $item['slug'] || ($item['slug'] === 'pms-payroll' && strpos($pms_current_page, 'pms-payroll-') === 0)) ? 'is-active' : ''; ?>"
                    data-pms-nav-label="<?php echo esc_attr(strtolower($item['label'])); ?>">
                     <span class="dashicons <?php echo esc_attr($item['icon']); ?>"></span>
                     <span><?php echo esc_html($item['label']); ?></span>

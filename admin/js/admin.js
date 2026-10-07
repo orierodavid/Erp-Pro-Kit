@@ -212,10 +212,35 @@
         });
     }
 
+
+    function initMobileShell() {
+        var toggle = document.querySelector('.pms-mobile-menu-toggle');
+        var shell = document.querySelector('.pms-shell');
+        if (!toggle || !shell) return;
+        toggle.addEventListener('click', function () {
+            var open = shell.classList.toggle('pms-nav-open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+    }
+
+    function initPeopleSearch() {
+        var input = document.querySelector('[data-pms-people-search]');
+        var rows = document.querySelectorAll('[data-pms-person-row]');
+        if (!input || !rows.length) return;
+        input.addEventListener('input', function () {
+            var query = input.value.trim().toLowerCase();
+            Array.prototype.forEach.call(rows, function (row) {
+                row.style.display = !query || row.textContent.toLowerCase().indexOf(query) !== -1 ? '' : 'none';
+            });
+        });
+    }
+
     onReady(function () {
         initWorkModeToggle();
         initAddressVerification();
         initStartTaskButtons();
         initAttendanceButtons();
+        initMobileShell();
+        initPeopleSearch();
     });
 })();

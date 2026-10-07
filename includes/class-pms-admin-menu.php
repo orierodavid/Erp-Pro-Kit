@@ -58,6 +58,9 @@ class PMS_Admin_Menu
         if (PMS_Modules::is_active('invoicing') && current_user_can('pms_manage_invoices')) {
             add_submenu_page('pms-dashboard', __('Invoicing', 'pms'), __('Invoicing', 'pms'), 'pms_manage_invoices', 'pms-invoicing', [$this, 'render_invoicing']);
         }
+        if (PMS_Modules::is_active('inventory') && current_user_can('pms_manage_inventory')) {
+            add_submenu_page('pms-dashboard', __('Inventory', 'pms'), __('Inventory', 'pms'), 'pms_manage_inventory', 'pms-inventory', [$this, 'render_inventory']);
+        }
         if (PMS_Modules::is_active('expenses') && (current_user_can('pms_manage_expenses') || current_user_can('pms_submit_expenses'))) {
             add_submenu_page('pms-dashboard', __('Expenses', 'pms'), __('Expenses', 'pms'), 'read', 'pms-expenses', [$this, 'render_expenses']);
         }
@@ -124,6 +127,12 @@ class PMS_Admin_Menu
             wp_die(__('You do not have permission to view this page.', 'pms'));
         }
         include PMS_PLUGIN_DIR . 'admin/views/invoicing.php';
+    }
+
+    public function render_inventory(): void
+    {
+        if (! PMS_Modules::is_active('inventory') || ! current_user_can('pms_manage_inventory')) { wp_die(__('You do not have permission to view this page.', 'pms')); }
+        include PMS_PLUGIN_DIR . 'admin/views/inventory.php';
     }
 
     public function render_expenses(): void

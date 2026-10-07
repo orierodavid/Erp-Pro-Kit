@@ -24,6 +24,7 @@ $pms_nav_items = [
     ['slug' => 'pms-attendance', 'label' => __('Attendance', 'pms'), 'icon' => 'dashicons-calendar-alt', 'cap' => 'pms_clock_in_out', 'module' => 'attendance'],
     ['slug' => 'pms-leave', 'label' => __('Leave', 'pms'), 'icon' => 'dashicons-airplane', 'cap' => 'pms_request_leave', 'module' => 'leave'],
     ['slug' => 'pms-my-account', 'label' => __('My Profile', 'pms'), 'icon' => 'dashicons-admin-users', 'cap' => 'read'],
+    ['slug' => 'pms-crm', 'label' => __('CRM / Sales', 'pms'), 'icon' => 'dashicons-chart-area', 'cap' => 'pms_manage_crm', 'module' => 'crm'],
 ];
 
 $pms_org_items = [

@@ -13,6 +13,7 @@ class PMS_Activator
         // them safely on later versions if schema_sql() changes.
         dbDelta(PMS_DB::schema_sql());
         dbDelta(PMS_Payroll::schema_sql());
+        dbDelta(PMS_CRM::schema_sql());
 
         PMS_Roles::register();
 

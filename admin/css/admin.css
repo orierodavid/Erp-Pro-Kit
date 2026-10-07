@@ -1097,3 +1097,11 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
 .pms-payroll-report-total span{color:#64748B;font-size:13px;font-weight:700}
 .pms-payroll-report-total strong{color:#0F172A;font-size:24px;font-weight:800}
 @media(max-width:760px){.pms-payroll-tabs{overflow:auto;flex-wrap:nowrap}.pms-payroll-tabs a{white-space:nowrap}.pms-section-head{align-items:flex-start;flex-direction:column}}
+
+/* Projects / Assignments / Task Reports */
+.pms-project-assign-form{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px;align-items:end;margin-bottom:18px}
+.pms-report-bars{display:grid;gap:14px}
+.pms-report-bars>div{display:grid;grid-template-columns:100px 1fr 42px;gap:10px;align-items:center;color:#475569;font-size:12px;font-weight:700}
+.pms-report-bars b{display:block;height:9px;border-radius:999px;background:#2563EB;min-width:2px}
+.pms-report-bars strong{text-align:right;color:#0F172A}
+@media(max-width:760px){.pms-project-assign-form{grid-template-columns:1fr}.pms-report-bars>div{grid-template-columns:80px 1fr 35px}}

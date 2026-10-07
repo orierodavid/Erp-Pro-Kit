@@ -15,7 +15,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
         <p class="pms-eyebrow"><?php esc_html_e('Organization', 'pms'); ?></p>
         <h1><?php esc_html_e('People', 'pms'); ?></h1>
     </div>
-    <a href="<?php echo esc_url(admin_url('user-new.php')); ?>" class="pms-btn-primary">
+    <a href="<?php echo esc_url(admin_url('admin.php?page=pms-user-new')); ?>" class="pms-btn-primary">
         <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Add new person', 'pms'); ?>
     </a>
 </div>
@@ -36,8 +36,8 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
 </div>
 
 <p class="pms-hint">
-    <?php esc_html_e('Roles are assigned from the standard WordPress Users screen.', 'pms'); ?>
-    <a href="<?php echo esc_url(admin_url('users.php')); ?>"><?php esc_html_e('Manage roles →', 'pms'); ?></a>
+    <?php esc_html_e('Employees, departments and roles are managed from this ERP workspace.', 'pms'); ?>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=pms-roles')); ?>"><?php esc_html_e('Roles & Permissions →', 'pms'); ?></a>
 </p>
 
 <div class="pms-panel">

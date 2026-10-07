@@ -41,6 +41,8 @@ class PMS_Admin_Menu
         }
         add_submenu_page('pms-dashboard', __('Tasks', 'pms'), __('Tasks', 'pms'), 'pms_manage_tasks', 'pms-tasks', [$this, 'render_tasks']);
         add_submenu_page('pms-dashboard', __('People', 'pms'), __('People', 'pms'), 'pms_manage_users', 'pms-users', [$this, 'render_users']);
+        add_submenu_page(null, __('Add person', 'pms'), __('Add person', 'pms'), 'pms_manage_users', 'pms-user-new', [$this, 'render_user_new']);
+        add_submenu_page('pms-dashboard', __('Roles & Permissions', 'pms'), __('Roles & Permissions', 'pms'), 'pms_manage_users', 'pms-roles', [$this, 'render_roles']);
         add_submenu_page('pms-dashboard', __('Departments', 'pms'), __('Departments', 'pms'), 'pms_manage_departments', 'pms-departments', [$this, 'render_departments']);
         add_submenu_page('pms-dashboard', __('Branches', 'pms'), __('Branches', 'pms'), 'pms_manage_branches', 'pms-branches', [$this, 'render_branches']);
         add_submenu_page('pms-dashboard', __('Reports', 'pms'), __('Reports', 'pms'), 'pms_view_reports', 'pms-reports', [$this, 'render_reports']);
@@ -77,6 +79,96 @@ class PMS_Admin_Menu
             wp_die(__('You do not have permission to view this page.', 'pms'));
         }
         include PMS_PLUGIN_DIR . 'admin/views/tasks.php';
+    }
+
+    public function render_user_new(): void
+    {
+        if (! current_user_can('pms_manage_users')) {
+            wp_die(__('You do not have permission to view this page.', 'pms'));
+        }
+
+        $error = '';
+        $success = '';
+        $values = [
+            'username' => '', 'email' => '', 'first_name' => '', 'last_name' => '',
+            'password' => '', 'role' => PMS_Roles::STAFF_ROLE, 'designation' => '', 'department_id' => '',
+        ];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pms_create_person'])) {
+            check_admin_referer('pms_create_person', 'pms_create_person_nonce');
+            foreach (array_keys($values) as $key) {
+                if (isset($_POST[$key])) {
+                    $values[$key] = sanitize_text_field(wp_unslash($_POST[$key]));
+                }
+            }
+            $values['email'] = sanitize_email($values['email']);
+
+            if ($values['username'] === '' || $values['email'] === '') {
+                $error = __('Username and email are required.', 'pms');
+            } elseif (! is_email($values['email'])) {
+                $error = __('Enter a valid email address.', 'pms');
+            } elseif (username_exists($values['username'])) {
+                $error = __('That username is already in use.', 'pms');
+            } elseif (email_exists($values['email'])) {
+                $error = __('That email address is already in use.', 'pms');
+            } else {
+                $role = get_role($values['role']);
+                if (! $role) {
+                    $error = __('Select a valid role.', 'pms');
+                } else {
+                    $password = $values['password'] !== '' ? $values['password'] : wp_generate_password(20, true, true);
+                    $user_id = wp_create_user($values['username'], $password, $values['email']);
+                    if (is_wp_error($user_id)) {
+                        $error = $user_id->get_error_message();
+                    } else {
+                        wp_update_user([
+                            'ID' => $user_id,
+                            'first_name' => $values['first_name'],
+                            'last_name' => $values['last_name'],
+                            'display_name' => trim($values['first_name'] . ' ' . $values['last_name']) ?: $values['username'],
+                            'role' => $values['role'],
+                        ]);
+                        update_user_meta($user_id, 'pms_designation', $values['designation']);
+                        update_user_meta($user_id, 'pms_department_id', $values['department_id'] !== '' ? (int) $values['department_id'] : 0);
+                        $success = sprintf(__('Person created successfully. %s', 'pms'), esc_html($values['username']));
+                        $values = ['username' => '', 'email' => '', 'first_name' => '', 'last_name' => '', 'password' => '', 'role' => PMS_Roles::STAFF_ROLE, 'designation' => '', 'department_id' => ''];
+                    }
+                }
+            }
+        }
+
+        $roles = PMS_Roles::role_definitions_for_ui();
+        $departments = PMS_DB::get_departments();
+        include PMS_PLUGIN_DIR . 'admin/views/user-new.php';
+    }
+
+    public function render_roles(): void
+    {
+        if (! current_user_can('pms_manage_users')) {
+            wp_die(__('You do not have permission to view this page.', 'pms'));
+        }
+
+        $notice = '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pms_role_action'])) {
+            check_admin_referer('pms_roles_manage', 'pms_roles_nonce');
+            $action = sanitize_key(wp_unslash($_POST['pms_role_action']));
+            $caps = isset($_POST['caps']) && is_array($_POST['caps']) ? array_map('sanitize_key', wp_unslash($_POST['caps'])) : [];
+            if ($action === 'create') {
+                $name = isset($_POST['role_name']) ? sanitize_text_field(wp_unslash($_POST['role_name'])) : '';
+                $created = $name !== '' ? PMS_Roles::create_custom_role($name, $caps) : '';
+                $notice = $created ? __('Custom role created.', 'pms') : __('Could not create the role. Check the role name and try again.', 'pms');
+            } elseif ($action === 'save') {
+                $slug = isset($_POST['role_slug']) ? sanitize_key(wp_unslash($_POST['role_slug'])) : '';
+                $notice = PMS_Roles::save_role_capabilities($slug, $caps) ? __('Role permissions saved.', 'pms') : __('Could not save that role.', 'pms');
+            } elseif ($action === 'delete') {
+                $slug = isset($_POST['role_slug']) ? sanitize_key(wp_unslash($_POST['role_slug'])) : '';
+                $notice = PMS_Roles::delete_custom_role($slug) ? __('Custom role deleted.', 'pms') : __('Only custom ERP roles can be deleted.', 'pms');
+            }
+        }
+
+        $roles = PMS_Roles::role_definitions_for_ui();
+        $catalogue = PMS_Roles::capability_catalogue();
+        include PMS_PLUGIN_DIR . 'admin/views/roles.php';
     }
 
     public function render_users(): void

@@ -23,6 +23,7 @@ $pms_nav_items = [
     ['slug' => 'pms-dashboard', 'label' => __('Dashboard', 'pms'), 'icon' => 'dashicons-grid-view', 'cap' => 'read'],
     ['slug' => 'pms-my-tasks', 'label' => __('My Tasks', 'pms'), 'icon' => 'dashicons-yes-alt', 'cap' => 'pms_view_assigned_tasks'],
     ['slug' => 'pms-tasks', 'label' => __('Tasks', 'pms'), 'icon' => 'dashicons-list-view', 'cap' => 'pms_manage_tasks'],
+    ['slug' => 'pms-attendance', 'label' => __('Attendance', 'pms'), 'icon' => 'dashicons-clock', 'cap' => 'pms_view_attendance', 'module' => 'attendance'],
 ];
 
 $pms_org_items = [
@@ -52,7 +53,7 @@ $pms_visible_system = array_filter($pms_system_items, fn ($item) => current_user
         <nav class="pms-shell-nav">
             <p class="pms-nav-label"><?php esc_html_e('Workspace', 'pms'); ?></p>
             <?php foreach ($pms_nav_items as $item) :
-                if (! current_user_can($item['cap'])) {
+                if (! current_user_can($item['cap']) || (! empty($item['module']) && ! PMS_Modules::is_active($item['module']))) {
                     continue;
                 }
                 ?>

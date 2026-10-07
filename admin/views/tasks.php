@@ -446,8 +446,37 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
         <?php endif; ?>
     <?php endif; ?>
 <?php else :
-    $tasks = PMS_DB::get_all_tasks();
+    $task_search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
+    $task_status_filter = isset($_GET['status']) ? sanitize_key($_GET['status']) : '';
+    $task_priority_filter = isset($_GET['priority']) ? sanitize_key($_GET['priority']) : '';
+    $task_work_mode_filter = isset($_GET['work_mode']) ? sanitize_key($_GET['work_mode']) : '';
+    $task_assignee_filter = isset($_GET['assigned_to']) ? absint($_GET['assigned_to']) : 0;
+    $task_department_filter = isset($_GET['department_id']) ? absint($_GET['department_id']) : 0;
+    $all_tasks = PMS_DB::get_all_tasks();
+    $tasks = array_values(array_filter($all_tasks, function ($task) use ($task_search, $task_status_filter, $task_priority_filter, $task_work_mode_filter, $task_assignee_filter, $task_department_filter) {
+        $haystack = strtolower($task->title . ' ' . $task->description);
+        return (!$task_search || strpos($haystack, strtolower($task_search)) !== false)
+            && (!$task_status_filter || $task->status === $task_status_filter)
+            && (!$task_priority_filter || $task->priority === $task_priority_filter)
+            && (!$task_work_mode_filter || $task->work_mode === $task_work_mode_filter)
+            && (!$task_assignee_filter || (int) $task->assigned_to === $task_assignee_filter)
+            && (!$task_department_filter || (int) $task->department_id === $task_department_filter);
+    }));
     ?>
+    <div class="pms-panel pms-form-panel">
+        <form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;">
+            <input type="hidden" name="page" value="pms-tasks">
+            <div class="pms-search"><span class="dashicons dashicons-search"></span><input type="search" name="search" class="pms-input" value="<?php echo esc_attr($task_search); ?>" placeholder="<?php esc_attr_e('Search tasks…', 'pms'); ?>"></div>
+            <select name="status" class="pms-input"><option value=""><?php esc_html_e('All statuses', 'pms'); ?></option><?php foreach (PMS_Constants::task_statuses() as $key => $label) : ?><option value="<?php echo esc_attr($key); ?>" <?php selected($task_status_filter, $key); ?>><?php echo esc_html($label); ?></option><?php endforeach; ?></select>
+            <select name="priority" class="pms-input"><option value=""><?php esc_html_e('All priorities', 'pms'); ?></option><?php foreach (PMS_Constants::task_priorities() as $key => $label) : ?><option value="<?php echo esc_attr($key); ?>" <?php selected($task_priority_filter, $key); ?>><?php echo esc_html($label); ?></option><?php endforeach; ?></select>
+            <select name="work_mode" class="pms-input"><option value=""><?php esc_html_e('All work modes', 'pms'); ?></option><?php foreach (PMS_Constants::work_modes() as $key => $label) : ?><option value="<?php echo esc_attr($key); ?>" <?php selected($task_work_mode_filter, $key); ?>><?php echo esc_html($label); ?></option><?php endforeach; ?></select>
+            <select name="assigned_to" class="pms-input"><option value=""><?php esc_html_e('All assignees', 'pms'); ?></option><?php foreach ($staff_and_admins as $person) : ?><option value="<?php echo esc_attr($person->ID); ?>" <?php selected($task_assignee_filter, $person->ID); ?>><?php echo esc_html($person->display_name); ?></option><?php endforeach; ?></select>
+            <select name="department_id" class="pms-input"><option value=""><?php esc_html_e('All departments', 'pms'); ?></option><?php foreach ($departments as $dept) : ?><option value="<?php echo esc_attr($dept->id); ?>" <?php selected($task_department_filter, $dept->id); ?>><?php echo esc_html($dept->name); ?></option><?php endforeach; ?></select>
+            <button type="submit" class="pms-btn-primary"><?php esc_html_e('Filter', 'pms'); ?></button>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=pms-tasks')); ?>" class="pms-btn-secondary"><?php esc_html_e('Reset', 'pms'); ?></a>
+            <a href="<?php echo esc_url(wp_nonce_url(add_query_arg(['action'=>'pms_export_tasks_report','search'=>$task_search,'status'=>$task_status_filter,'priority'=>$task_priority_filter,'work_mode'=>$task_work_mode_filter,'assigned_to'=>$task_assignee_filter,'department_id'=>$task_department_filter], admin_url('admin-post.php')), 'pms_export_tasks_report_action')); ?>" class="pms-btn-secondary"><span class="dashicons dashicons-download"></span> <?php esc_html_e('Export CSV', 'pms'); ?></a>
+        </form>
+    </div>
     <div class="pms-panel">
         <table class="pms-table">
             <thead>

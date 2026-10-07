@@ -80,17 +80,21 @@ class PMS_Assets
      */
     private function dynamic_color_css(): string
     {
-        $default = PMS_Roles::current_user_is_pms_admin() ? '#2d67ef' : '#ff7900';
-        $primary = get_option('pms_primary_color', $default);
-        $primary = sanitize_hex_color($primary) ?: $default;
-        $dark = PMS_Settings::darken($primary, 0.18);
-        $rgb = PMS_Settings::to_rgb($primary);
+        $primary = sanitize_hex_color(get_option('pms_primary_color', '#2563eb')) ?: '#2563eb';
+        $secondary = sanitize_hex_color(get_option('pms_secondary_color', '#0f172a')) ?: '#0f172a';
+        $primary_dark = PMS_Settings::darken($primary, 0.18);
+        $secondary_dark = PMS_Settings::darken($secondary, 0.18);
+        $primary_rgb = PMS_Settings::to_rgb($primary);
+        $secondary_rgb = PMS_Settings::to_rgb($secondary);
 
         return ".pms-shell, .pms-wrap {
             --pms-primary: {$primary};
-            --pms-primary-dark: {$dark};
-            --pms-primary-soft: rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.12);
-            --pms-glow: 0 6px 16px rgba({$rgb['r']}, {$rgb['g']}, {$rgb['b']}, 0.28);
+            --pms-primary-dark: {$primary_dark};
+            --pms-primary-soft: rgba({$primary_rgb['r']}, {$primary_rgb['g']}, {$primary_rgb['b']}, 0.12);
+            --pms-secondary: {$secondary};
+            --pms-secondary-dark: {$secondary_dark};
+            --pms-secondary-soft: rgba({$secondary_rgb['r']}, {$secondary_rgb['g']}, {$secondary_rgb['b']}, 0.10);
+            --pms-glow: 0 8px 22px rgba({$primary_rgb['r']}, {$primary_rgb['g']}, {$primary_rgb['b']}, 0.22);
         }";
     }
 }

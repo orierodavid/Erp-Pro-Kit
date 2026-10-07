@@ -19,17 +19,21 @@ $pms_company_name = get_option('pms_company_name', get_bloginfo('name'));
 $pms_brand_initial = strtoupper(substr((string) $pms_company_name, 0, 1));
 
 $pms_nav_items = [
-    ['slug' => 'pms-dashboard', 'label' => __('Dashboard', 'pms'), 'icon' => 'dashicons-grid-view', 'cap' => 'read'],
+    ['slug' => 'pms-dashboard', 'label' => __('Dashboard', 'pms'), 'icon' => 'dashicons-dashboard', 'cap' => 'read'],
     ['slug' => 'pms-my-tasks', 'label' => __('My Tasks', 'pms'), 'icon' => 'dashicons-yes-alt', 'cap' => 'pms_view_assigned_tasks', 'module' => 'tasks'],
     ['slug' => 'pms-tasks', 'label' => __('Tasks', 'pms'), 'icon' => 'dashicons-list-view', 'cap' => 'pms_manage_tasks', 'module' => 'tasks'],
-    ['slug' => 'pms-attendance', 'label' => __('Attendance', 'pms'), 'icon' => 'dashicons-calendar-alt', 'cap' => 'pms_clock_in_out', 'module' => 'attendance'],
+    ['slug' => 'pms-projects', 'label' => __('Projects', 'pms'), 'icon' => 'dashicons-portfolio', 'cap' => 'pms_manage_tasks', 'module' => 'tasks'],
+    ['slug' => 'pms-assignments', 'label' => __('Assignments', 'pms'), 'icon' => 'dashicons-randomize', 'cap' => 'pms_manage_tasks', 'module' => 'tasks'],
+    ['slug' => 'pms-attendance', 'label' => __('Attendance', 'pms'), 'icon' => 'dashicons-clock', 'cap' => 'pms_clock_in_out', 'module' => 'attendance'],
     ['slug' => 'pms-leave', 'label' => __('Leave', 'pms'), 'icon' => 'dashicons-airplane', 'cap' => 'pms_request_leave', 'module' => 'leave'],
-    ['slug' => 'pms-my-account', 'label' => __('My Profile', 'pms'), 'icon' => 'dashicons-admin-users', 'cap' => 'read'],
-    ['slug' => 'pms-crm', 'label' => __('CRM / Sales', 'pms'), 'icon' => 'dashicons-chart-area', 'cap' => 'pms_manage_crm', 'module' => 'crm'],
-    ['slug' => 'pms-real-estate', 'label' => __('Real Estate', 'pms'), 'icon' => 'dashicons-building', 'cap' => 'pms_manage_real_estate', 'module' => 'real_estate'],
-    ['slug' => 'pms-invoicing', 'label' => __('Invoicing', 'pms'), 'icon' => 'dashicons-media-text', 'cap' => 'pms_manage_invoices', 'module' => 'invoicing'],
+    ['slug' => 'pms-my-account', 'label' => __('My Profile', 'pms'), 'icon' => 'dashicons-id', 'cap' => 'read'],
+    ['slug' => 'pms-crm', 'label' => __('CRM / Sales', 'pms'), 'icon' => 'dashicons-groups', 'cap' => 'pms_manage_crm', 'module' => 'crm'],
+    ['slug' => 'pms-invoicing', 'label' => __('Invoicing', 'pms'), 'icon' => 'dashicons-media-document', 'cap' => 'pms_manage_invoices', 'module' => 'invoicing'],
     ['slug' => 'pms-expenses', 'label' => __('Expenses', 'pms'), 'icon' => 'dashicons-money-alt', 'cap' => 'pms_submit_expenses', 'module' => 'expenses'],
     ['slug' => 'pms-inventory', 'label' => __('Inventory', 'pms'), 'icon' => 'dashicons-archive', 'cap' => 'pms_manage_inventory', 'module' => 'inventory'],
+    ['slug' => 'pms-real-estate', 'label' => __('Real Estate', 'pms'), 'icon' => 'dashicons-building', 'cap' => 'pms_manage_real_estate', 'module' => 'real_estate'],
+    ['slug' => 'pms-payroll', 'label' => __('Payroll', 'pms'), 'icon' => 'dashicons-money-alt', 'cap' => 'pms_manage_payroll', 'module' => 'payroll'],
+    ['slug' => 'pms-task-reports', 'label' => __('Task Reports', 'pms'), 'icon' => 'dashicons-chart-line', 'cap' => 'pms_view_reports', 'module' => 'tasks'],
 ];
 
 $pms_org_items = [

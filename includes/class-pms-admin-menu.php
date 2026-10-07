@@ -25,8 +25,8 @@ class PMS_Admin_Menu
     {
         // Top-level menu — visible to anyone with at least one pms_ capability.
         add_menu_page(
-            __('Project Management', 'pms'),
-            __('Project Mgmt', 'pms'),
+            __('ERP Pro Kit', 'pms'),
+            __('ERP Pro Kit', 'pms'),
             'read', // refined per-submenu below; this just controls the parent link
             'pms-dashboard',
             [$this, 'render_dashboard'],

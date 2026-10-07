@@ -158,7 +158,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
     <section class="pms-dashboard-recent">
         <div class="pms-dashboard-section-head pms-dashboard-recent-head">
             <div class="pms-dashboard-section-icon pms-dashboard-section-icon-blue">
-                <span class="dashicons dashicons-media-document"></span>
+                <span class="dashicons dashicons-clipboard"></span>
             </div>
             <div>
                 <h2><?php esc_html_e('Recent tasks', 'pms'); ?></h2>
@@ -171,7 +171,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
         if (empty($rows)) :
             ?>
             <div class="pms-dashboard-empty">
-                <div class="pms-dashboard-empty-icon"><span class="dashicons dashicons-yes-alt"></span></div>
+                <div class="pms-dashboard-empty-icon"><span class="dashicons dashicons-clipboard"></span></div>
                 <strong><?php esc_html_e('Nothing here yet.', 'pms'); ?></strong>
                 <p><?php esc_html_e('When you have tasks, they will appear here.', 'pms'); ?></p>
             </div>

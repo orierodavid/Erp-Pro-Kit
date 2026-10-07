@@ -23,7 +23,7 @@ define('PMS_VERSION', '0.7.0');
 define('PMS_PLUGIN_FILE', __FILE__);
 define('PMS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PMS_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('PMS_DB_VERSION', '1.0.6'); // bump this + update Activator when schema/role changes
+define('PMS_DB_VERSION', '1.1.0'); // bump this + update Activator when schema/role changes
 
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-activator.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-deactivator.php';
@@ -33,6 +33,7 @@ require_once PMS_PLUGIN_DIR . 'includes/class-pms-attendance.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-leave.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-constants.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-db.php';
+require_once PMS_PLUGIN_DIR . 'includes/class-pms-payroll.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-user-profile-fields.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-csv-export.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-settings.php';

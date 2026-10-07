@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($customer_id && class_exists('PMS_CRM')) {
             foreach (PMS_Invoicing::customers() as $customer) {
                 if ((int) $customer->id === $customer_id) {
-                    $customer_name = $customer->company ?: trim($customer->first_name . ' ' . $customer->last_name);
+                    $customer_name = $customer->company ?: $customer->name;
                     $customer_email = $customer->email;
                     break;
                 }
@@ -153,7 +153,7 @@ $tabs = [
                     <label>Customer
                         <select class="pms-input" name="customer_id">
                             <option value="0">Manual customer</option>
-                            <?php foreach ($customers as $customer) : $name = $customer->company ?: trim($customer->first_name . ' ' . $customer->last_name); ?>
+                            <?php foreach ($customers as $customer) : $name = $customer->company ?: $customer->name; ?>
                                 <option value="<?php echo (int) $customer->id; ?>"><?php echo esc_html($name); ?></option>
                             <?php endforeach; ?>
                         </select>

@@ -26,6 +26,7 @@ $pms_nav_items = [
     ['slug' => 'pms-assignments', 'label' => __('Assignments', 'pms'), 'icon' => 'dashicons-randomize', 'cap' => 'pms_manage_tasks', 'module' => 'tasks'],
     ['slug' => 'pms-attendance', 'label' => __('Attendance', 'pms'), 'icon' => 'dashicons-clock', 'cap' => 'pms_clock_in_out', 'module' => 'attendance'],
     ['slug' => 'pms-leave', 'label' => __('Leave', 'pms'), 'icon' => 'dashicons-airplane', 'cap' => 'pms_request_leave', 'module' => 'leave'],
+    ['slug' => 'pms-my-account', 'label' => __('My Profile', 'pms'), 'icon' => 'dashicons-id', 'cap' => 'read'],
     ['slug' => 'pms-crm', 'label' => __('CRM / Sales', 'pms'), 'icon' => 'dashicons-groups', 'cap' => 'pms_manage_crm', 'module' => 'crm'],
     ['slug' => 'pms-invoicing', 'label' => __('Invoicing', 'pms'), 'icon' => 'dashicons-media-document', 'cap' => 'pms_manage_invoices', 'module' => 'invoicing'],
     ['slug' => 'pms-expenses', 'label' => __('Expenses', 'pms'), 'icon' => 'dashicons-money-alt', 'cap' => 'pms_submit_expenses', 'module' => 'expenses'],

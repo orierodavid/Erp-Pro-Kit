@@ -30,6 +30,7 @@ $pms_org_items = [
     ['slug' => 'pms-users', 'label' => __('People', 'pms'), 'icon' => 'dashicons-groups', 'cap' => 'pms_manage_users'],
     ['slug' => 'pms-departments', 'label' => __('Departments', 'pms'), 'icon' => 'dashicons-networking', 'cap' => 'pms_manage_departments'],
     ['slug' => 'pms-branches', 'label' => __('Branches', 'pms'), 'icon' => 'dashicons-location', 'cap' => 'pms_manage_branches'],
+    ['slug' => 'pms-roles', 'label' => __('Roles & Permissions', 'pms'), 'icon' => 'dashicons-admin-users', 'cap' => 'pms_manage_users'],
 ];
 
 $pms_system_items = [

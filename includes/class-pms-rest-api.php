@@ -71,7 +71,7 @@ class PMS_REST_API
      */
     public function can_start_task(WP_REST_Request $request): bool
     {
-        if (! current_user_can('pms_clock_in_out')) {
+        if (! PMS_Modules::is_active('tasks') || ! current_user_can('pms_clock_in_out')) {
             return false;
         }
 

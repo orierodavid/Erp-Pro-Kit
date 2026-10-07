@@ -77,7 +77,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
                     <div class="pms-person-cell">
                         <?php echo get_avatar($person->ID, 28); ?>
                         <div>
-                            <div><a href="<?php echo esc_url(get_edit_user_link($person->ID)); ?>"><?php echo esc_html($person->display_name); ?></a></div>
+                            <div><a href="<?php echo esc_url(admin_url('admin.php?page=pms-user-edit&user_id=' . (int) $person->ID)); ?>"><?php echo esc_html($person->display_name); ?></a></div>
                             <small style="color:var(--pms-muted);"><?php echo esc_html($person->user_email); ?></small>
                         </div>
                     </div>

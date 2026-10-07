@@ -41,7 +41,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
                 </select>
             </label>
             <label><span><?php esc_html_e('Designation', 'pms'); ?></span><input type="text" name="designation" value="<?php echo esc_attr($values['designation']); ?>" placeholder="<?php esc_attr_e('e.g. Real Estate Agent', 'pms'); ?>"></label>
-            <label><span><?php esc_html_e('Password', 'pms'); ?></span><input type="password" name="password" value="" autocomplete="new-password"><small><?php esc_html_e('Leave blank to generate a secure password.', 'pms'); ?></small></label>
+            <label><span><?php esc_html_e('Password', 'pms'); ?></span><input type="password" name="password" value="" required minlength="8" autocomplete="new-password"><small><?php esc_html_e('Leave blank to generate a secure password.', 'pms'); ?></small></label>
         </div>
         <div class="pms-form-actions">
             <button type="submit" class="pms-btn-primary"><?php esc_html_e('Create person', 'pms'); ?></button>

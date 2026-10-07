@@ -13,6 +13,7 @@ class PMS_Deactivator
      */
     public static function deactivate(): void
     {
+        PMS_Real_Estate_Automation::deactivate();
         flush_rewrite_rules();
     }
 }

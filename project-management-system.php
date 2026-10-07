@@ -23,7 +23,7 @@ define('PMS_VERSION', '0.7.0');
 define('PMS_PLUGIN_FILE', __FILE__);
 define('PMS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PMS_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('PMS_DB_VERSION', '1.7.0'); // bump this + update Activator when schema/role changes
+define('PMS_DB_VERSION', '1.8.0'); // bump this + update Activator when schema/role changes
 
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-activator.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-deactivator.php';
@@ -39,6 +39,7 @@ require_once PMS_PLUGIN_DIR . 'includes/class-pms-invoicing.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-expenses.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-inventory.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-real-estate.php';
+require_once PMS_PLUGIN_DIR . 'includes/class-pms-real-estate-automation.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-user-profile-fields.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-csv-export.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-settings.php';
@@ -66,6 +67,7 @@ function pms_boot(): void
         PMS_Activator::activate();
     }
 
+    PMS_Real_Estate_Automation::init();
     new PMS_Admin_Menu();
     new PMS_REST_API();
     new PMS_Assets();

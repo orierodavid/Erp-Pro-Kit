@@ -66,6 +66,12 @@ foreach ($pms_page_titles as $item) {
                 if (! current_user_can($item['cap']) || (! empty($item['module']) && ! PMS_Modules::is_active($item['module']))) {
                     continue;
                 }
+                if ($pms_is_admin && in_array($item['slug'], ['pms-my-tasks', 'pms-leave'], true)) {
+                    continue;
+                }
+                if (! $pms_is_admin && $item['slug'] === 'pms-tasks') {
+                    continue;
+                }
                 ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=' . $item['slug'])); ?>"
                    class="pms-nav-item <?php echo $pms_current_page === $item['slug'] ? 'is-active' : ''; ?>"
@@ -75,7 +81,7 @@ foreach ($pms_page_titles as $item) {
                 </a>
             <?php endforeach; ?>
 
-            <?php if (! empty($pms_visible_org)) : ?>
+            <?php if ($pms_is_admin && ! empty($pms_visible_org)) : ?>
                 <p class="pms-nav-label"><?php esc_html_e('Organization', 'pms'); ?></p>
                 <?php foreach ($pms_visible_org as $item) : ?>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=' . $item['slug'])); ?>"
@@ -87,7 +93,7 @@ foreach ($pms_page_titles as $item) {
                 <?php endforeach; ?>
             <?php endif; ?>
 
-            <?php if (! empty($pms_visible_system)) : ?>
+            <?php if ($pms_is_admin && ! empty($pms_visible_system)) : ?>
                 <p class="pms-nav-label"><?php esc_html_e('System', 'pms'); ?></p>
                 <?php foreach ($pms_visible_system as $item) : ?>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=' . $item['slug'])); ?>"

@@ -16,6 +16,37 @@ if (! defined('ABSPATH')) {
 
 class PMS_Roles
 {
+    /** ERP roles and their base capabilities. Module capabilities are additive. */
+    public static function erp_roles(): array
+    {
+        return [
+            'pms_hr_manager' => [
+                'label' => __('HR Manager', 'pms'),
+                'caps' => ['pms_manage_users', 'pms_manage_departments', 'pms_manage_branches', 'pms_manage_hr', 'pms_view_attendance', 'pms_manage_leave'],
+            ],
+            'pms_accountant' => [
+                'label' => __('Accountant', 'pms'),
+                'caps' => ['pms_manage_payroll', 'pms_manage_invoices', 'pms_manage_expenses', 'pms_view_reports'],
+            ],
+            'pms_property_manager' => [
+                'label' => __('Property Manager', 'pms'),
+                'caps' => ['pms_manage_real_estate', 'pms_manage_crm', 'pms_manage_tasks'],
+            ],
+            'pms_sales_manager' => [
+                'label' => __('Sales / CRM Manager', 'pms'),
+                'caps' => ['pms_manage_crm', 'pms_manage_invoices', 'pms_manage_tasks'],
+            ],
+            'pms_real_estate_agent' => [
+                'label' => __('Real Estate Agent', 'pms'),
+                'caps' => ['pms_view_real_estate', 'pms_manage_crm', 'pms_view_assigned_tasks', 'pms_update_own_tasks'],
+            ],
+            'pms_project_manager' => [
+                'label' => __('Project Manager', 'pms'),
+                'caps' => ['pms_manage_tasks', 'pms_view_reports'],
+            ],
+        ];
+    }
+
     public const ADMIN_ROLE = 'pms_admin';
     public const STAFF_ROLE = 'pms_staff';
 
@@ -31,6 +62,15 @@ class PMS_Roles
             'pms_manage_settings'    => true,
             'pms_clock_in_out'       => true,
             'pms_view_all_attendance' => true,
+            'pms_view_attendance'     => true,
+            'pms_manage_hr'           => true,
+            'pms_manage_leave'        => true,
+            'pms_manage_payroll'      => true,
+            'pms_manage_crm'          => true,
+            'pms_manage_real_estate'  => true,
+            'pms_view_real_estate'    => true,
+            'pms_manage_invoices'     => true,
+            'pms_manage_expenses'     => true,
             'read'                   => true, // needed so the account can log into wp-admin at all
         ];
     }
@@ -57,9 +97,18 @@ class PMS_Roles
     {
         remove_role(self::ADMIN_ROLE);
         remove_role(self::STAFF_ROLE);
+        foreach (array_keys(self::erp_roles()) as $role) {
+            remove_role($role);
+        }
 
         add_role(self::ADMIN_ROLE, __('PMS Admin', 'pms'), self::admin_capabilities());
         add_role(self::STAFF_ROLE, __('PMS Staff', 'pms'), self::staff_capabilities());
+
+        foreach (self::erp_roles() as $slug => $definition) {
+            $caps = array_fill_keys($definition['caps'], true);
+            $caps['read'] = true;
+            add_role($slug, $definition['label'], $caps);
+        }
 
         self::grant_to_administrators();
     }

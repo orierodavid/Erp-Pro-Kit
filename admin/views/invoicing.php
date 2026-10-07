@@ -213,7 +213,11 @@ $tabs = [
             <div class="pms-section-head"><div><h2><?php esc_html_e('Record Payment', 'pms'); ?></h2><p><?php esc_html_e('Payments are capped at the invoice balance and update its status automatically.', 'pms'); ?></p></div></div>
             <form method="post"><input type="hidden" name="pms_invoice_action" value="payment"><?php wp_nonce_field('pms_invoicing_manage', 'pms_invoicing_nonce'); ?>
                 <div class="pms-form-grid">
-                    <label>Invoice<select class="pms-input" name="invoice_id" required><option value="">Select invoice</option><?php foreach ($invoices as $invoice) if ((float) $invoice->balance_due > 0) : ?><option value="<?php echo (int) $invoice->id; ?>"><?php echo esc_html($invoice->invoice_number . ' — ' . $invoice->customer_name . ' — ' . $money($invoice->balance_due, $invoice->currency)); ?></option><?php endforeach; ?></select></label>
+                    <label>Invoice<select class="pms-input" name="invoice_id" required><option value="">Select invoice</option><?php foreach ($invoices as $invoice) : ?>
+                                <?php if ((float) $invoice->balance_due > 0) : ?>
+                                    <option value="<?php echo (int) $invoice->id; ?>"><?php echo esc_html($invoice->invoice_number . ' — ' . $invoice->customer_name . ' — ' . $money($invoice->balance_due, $invoice->currency)); ?></option>
+                                <?php endif; ?>
+                            <?php endforeach; ?></select></label>
                     <label>Payment Date<input class="pms-input" type="date" name="payment_date" value="<?php echo esc_attr($today); ?>" required></label>
                     <label>Amount<input class="pms-input" type="number" step="0.01" min="0.01" name="amount" required></label>
                     <label>Method<input class="pms-input" name="method" placeholder="Bank transfer, cash, card"></label>

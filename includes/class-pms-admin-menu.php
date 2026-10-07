@@ -39,7 +39,10 @@ class PMS_Admin_Menu
             add_submenu_page('pms-dashboard', __('My Tasks', 'pms'), __('My Tasks', 'pms'), 'pms_view_assigned_tasks', 'pms-my-tasks', [$this, 'render_my_tasks']);
         }
         if (PMS_Modules::is_active('attendance')) {
-            add_submenu_page('pms-dashboard', __('Attendance', 'pms'), __('Attendance', 'pms'), 'pms_view_attendance', 'pms-attendance', [$this, 'render_attendance']);
+            add_submenu_page('pms-dashboard', __('Attendance', 'pms'), __('Attendance', 'pms'), 'pms_clock_in_out', 'pms-attendance', [$this, 'render_attendance']);
+        }
+        if (PMS_Modules::is_active('leave')) {
+            add_submenu_page('pms-dashboard', __('Leave', 'pms'), __('Leave', 'pms'), 'pms_request_leave', 'pms-leave', [$this, 'render_leave']);
         }
         if (PMS_Modules::is_active('tasks')) {
             add_submenu_page('pms-dashboard', __('Tasks', 'pms'), __('Tasks', 'pms'), 'pms_manage_tasks', 'pms-tasks', [$this, 'render_tasks']);
@@ -76,6 +79,14 @@ class PMS_Admin_Menu
             wp_die(__('You do not have permission to view this page.', 'pms'));
         }
         include PMS_PLUGIN_DIR . 'admin/views/attendance.php';
+    }
+
+    public function render_leave(): void
+    {
+        if (! PMS_Modules::is_active('leave') || (! current_user_can('pms_request_leave') && ! current_user_can('pms_manage_leave'))) {
+            wp_die(__('You do not have permission to view this page.', 'pms'));
+        }
+        include PMS_PLUGIN_DIR . 'admin/views/leave.php';
     }
 
     public function render_tasks(): void

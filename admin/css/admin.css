@@ -1139,3 +1139,10 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
 
 /* Inventory workspace */
 .pms-inventory-kpis{margin-bottom:20px}.pms-inventory-tabs{margin-bottom:20px}.pms-inventory-low{background:#FEF2F2!important;color:#B91C1C!important}.pms-inventory .pms-table td,.pms-inventory .pms-table th{vertical-align:middle}@media(max-width:760px){.pms-inventory-tabs{overflow:auto;flex-wrap:nowrap}.pms-inventory-tabs a{white-space:nowrap}}
+
+
+/* Settings */
+.pms-settings-time-range { display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap; }
+.pms-settings-time-range label { display:flex; flex-direction:column; gap:6px; color:var(--pms-muted); font-size:11px; font-weight:700; }
+.pms-settings-time-range input[type="time"] { width:150px; }
+@media (max-width: 782px) { .pms-settings-time-range input[type="time"] { width:100%; } }

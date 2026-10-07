@@ -58,6 +58,9 @@ class PMS_Admin_Menu
         if (PMS_Modules::is_active('invoicing') && current_user_can('pms_manage_invoices')) {
             add_submenu_page('pms-dashboard', __('Invoicing', 'pms'), __('Invoicing', 'pms'), 'pms_manage_invoices', 'pms-invoicing', [$this, 'render_invoicing']);
         }
+        if (PMS_Modules::is_active('real_estate') && current_user_can('pms_manage_real_estate')) {
+            add_submenu_page('pms-dashboard', __('Real Estate', 'pms'), __('Real Estate', 'pms'), 'pms_manage_real_estate', 'pms-real-estate', [$this, 'render_real_estate']);
+        }
         if (PMS_Modules::is_active('inventory') && current_user_can('pms_manage_inventory')) {
             add_submenu_page('pms-dashboard', __('Inventory', 'pms'), __('Inventory', 'pms'), 'pms_manage_inventory', 'pms-inventory', [$this, 'render_inventory']);
         }
@@ -133,6 +136,14 @@ class PMS_Admin_Menu
     {
         if (! PMS_Modules::is_active('inventory') || ! current_user_can('pms_manage_inventory')) { wp_die(__('You do not have permission to view this page.', 'pms')); }
         include PMS_PLUGIN_DIR . 'admin/views/inventory.php';
+    }
+
+    public function render_real_estate(): void
+    {
+        if (! PMS_Modules::is_active('real_estate') || ! current_user_can('pms_manage_real_estate')) {
+            wp_die(__('You do not have permission to view this page.', 'pms'));
+        }
+        include PMS_PLUGIN_DIR . 'admin/views/real-estate.php';
     }
 
     public function render_expenses(): void

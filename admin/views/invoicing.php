@@ -4,6 +4,13 @@ if (! PMS_Modules::is_active('invoicing') || ! current_user_can('pms_manage_invo
     wp_die(__('You do not have permission to view this page.', 'pms'));
 }
 
+if (isset($_GET['pms_invoice_download'])) {
+    PMS_Invoice_Document::download(absint($_GET['pms_invoice_download']));
+}
+if (isset($_GET['pms_invoice_preview'])) {
+    PMS_Invoice_Document::preview(absint($_GET['pms_invoice_preview']));
+}
+
 PMS_Invoicing::mark_overdue();
 $tab = isset($_GET['invoice_tab']) ? sanitize_key(wp_unslash($_GET['invoice_tab'])) : 'overview';
 $allowed_tabs = ['overview', 'quotes', 'invoices', 'payments', 'outstanding', 'reports'];
@@ -82,6 +89,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         $notice = $ok ? __('Payment recorded successfully.', 'pms') : __('Payment could not be recorded. Check the invoice balance and amount.', 'pms');
         $tab = 'payments';
+    } elseif ($action === 'email_invoice') {
+        $invoice_id = absint($_POST['invoice_id'] ?? 0);
+        $recipient = sanitize_email(wp_unslash($_POST['recipient_email'] ?? ''));
+        $sent = PMS_Invoice_Document::email($invoice_id, $recipient);
+        $notice = $sent ? __('Invoice PDF emailed successfully.', 'pms') : __('The invoice PDF could not be emailed. Check the recipient email and WordPress mail configuration.', 'pms');
+        $tab = 'invoices';
     } elseif ($action === 'convert') {
         $id = PMS_Invoicing::convert_quote_to_invoice(absint($_POST['quote_id'] ?? 0));
         $notice = $id ? __('Quote converted to invoice.', 'pms') : __('The quote could not be converted.', 'pms');
@@ -184,26 +197,54 @@ $tabs = [
             <div class="pms-section-head"><div><h2><?php esc_html_e('Create Invoice', 'pms'); ?></h2><p><?php esc_html_e('Record an invoice with line items, tax and due date.', 'pms'); ?></p></div></div>
             <form method="post">
                 <?php wp_nonce_field('pms_invoicing_manage', 'pms_invoicing_nonce'); ?><input type="hidden" name="pms_invoice_action" value="invoice">
-                <div class="pms-form-grid">
-                    <label>Invoice Number<input class="pms-input" name="invoice_number" placeholder="Auto-generated"></label>
-                    <label>Customer Name<input class="pms-input" name="customer_name" required></label>
-                    <label>Customer Email<input class="pms-input" type="email" name="customer_email"></label>
-                    <label>Issue Date<input class="pms-input" type="date" name="issue_date" value="<?php echo esc_attr($today); ?>" required></label>
-                    <label>Due Date<input class="pms-input" type="date" name="due_date"></label>
-                    <label>Currency<input class="pms-input" name="currency" value="USD"></label>
-                    <label>Tax<input class="pms-input" type="number" step="0.01" min="0" name="tax" value="0"></label>
-                    <label>Status<select class="pms-input" name="status"><option value="sent">Sent</option><option value="draft">Draft</option></select></label>
+                <?php
+                $invoice_customers = PMS_Invoicing::customers();
+                $invoice_tenants = class_exists('PMS_Real_Estate') ? PMS_Real_Estate::all('tenants') : [];
+                ?>
+                <div class="pms-invoice-builder">
+                    <div class="pms-invoice-builder-head">
+                        <div><span class="pms-invoice-eyebrow">ACCOUNTS & BILLING</span><h3>Create a professional invoice</h3><p>Build the invoice, choose VAT treatment, then export or email the finished PDF.</p></div>
+                        <div class="pms-invoice-number-badge">Invoice number<br><strong>Auto-generated</strong></div>
+                    </div>
+                    <div class="pms-form-grid">
+                        <label>Invoice Number<input class="pms-input" name="invoice_number" placeholder="Auto-generated"></label>
+                        <label>Recipient Type<select class="pms-input" id="pms-invoice-recipient-type" name="recipient_type"><option value="client">Client</option><option value="tenant">Tenant</option><option value="manual">Manual recipient</option></select></label>
+                        <label id="pms-invoice-client-field">Client
+                            <select class="pms-input" id="pms-invoice-client" name="customer_id">
+                                <option value="0" data-name="" data-email="">Select client</option>
+                                <?php foreach ($invoice_customers as $customer) : $name = $customer->company ?: $customer->name; ?>
+                                    <option value="<?php echo (int) $customer->id; ?>" data-name="<?php echo esc_attr($name); ?>" data-email="<?php echo esc_attr($customer->email); ?>"><?php echo esc_html($name); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                        <label id="pms-invoice-tenant-field" style="display:none">Tenant
+                            <select class="pms-input" id="pms-invoice-tenant" name="tenant_id">
+                                <option value="0" data-name="" data-email="">Select tenant</option>
+                                <?php foreach ($invoice_tenants as $tenant) : ?>
+                                    <option value="<?php echo (int) $tenant->id; ?>" data-name="<?php echo esc_attr($tenant->name); ?>" data-email="<?php echo esc_attr($tenant->email); ?>"><?php echo esc_html($tenant->name); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                        <label>Recipient Name<input class="pms-input" id="pms-invoice-recipient-name" name="customer_name" required></label>
+                        <label>Recipient Email<input class="pms-input" id="pms-invoice-recipient-email" type="email" name="customer_email" required></label>
+                        <label>Issue Date<input class="pms-input" type="date" name="issue_date" value="<?php echo esc_attr($today); ?>" required></label>
+                        <label>Due Date<input class="pms-input" type="date" name="due_date" value="<?php echo esc_attr(gmdate('Y-m-d', strtotime('+30 days'))); ?>"></label>
+                        <label>Currency<input class="pms-input" name="currency" value="NGN"></label>
+                        <label>VAT Rate (%)<input class="pms-input" type="number" step="0.01" min="0" name="vat_rate" value="7.50"></label>
+                        <label class="pms-invoice-check"><input type="checkbox" name="vat_inclusive" value="1" checked><span><strong>VAT inclusive</strong><small>Keep the line-item total VAT-inclusive and show the VAT portion separately.</small></span></label>
+                        <label>Status<select class="pms-input" name="status"><option value="sent">Sent</option><option value="draft">Draft</option></select></label>
+                    </div>
+                    <?php include __DIR__ . '/invoicing-items.php'; ?>
+                    <label class="pms-form-field">Notes<textarea class="pms-input" name="notes" rows="3" placeholder="Payment instructions, bank details, thank-you note or other invoice terms."></textarea></label>
+                    <div class="pms-invoice-builder-footer"><span>VAT can be switched off by setting the rate to 0%. Inclusive/exclusive treatment is stored with the invoice.</span><button class="pms-btn pms-btn-primary" type="submit"><span class="dashicons dashicons-media-document"></span><?php esc_html_e('Create Invoice', 'pms'); ?></button></div>
                 </div>
-                <?php include __DIR__ . '/invoicing-items.php'; ?>
-                <label class="pms-form-field">Notes<textarea class="pms-input" name="notes" rows="3"></textarea></label>
-                <button class="pms-btn pms-btn-primary" type="submit"><?php esc_html_e('Create Invoice', 'pms'); ?></button>
             </form>
         </div>
         <div class="pms-panel">
             <div class="pms-section-head"><h2><?php esc_html_e('Invoices', 'pms'); ?></h2></div>
-            <div class="pms-table-wrap"><table class="pms-table"><thead><tr><th>Invoice</th><th>Customer</th><th>Issue / Due</th><th>Status</th><th>Total</th><th>Balance</th></tr></thead><tbody>
-            <?php foreach ($invoices as $invoice) : ?><tr><td><strong><?php echo esc_html($invoice->invoice_number); ?></strong></td><td><?php echo esc_html($invoice->customer_name); ?><br><small><?php echo esc_html($invoice->customer_email); ?></small></td><td><?php echo esc_html($invoice->issue_date); ?><br><small><?php echo esc_html($invoice->due_date ?: '—'); ?></small></td><td><span class="pms-status"><?php echo esc_html(ucfirst($invoice->status)); ?></span></td><td><?php echo $money($invoice->total, $invoice->currency); ?></td><td><?php echo $money($invoice->balance_due, $invoice->currency); ?></td></tr><?php endforeach; ?>
-            <?php if (! $invoices) : ?><tr><td colspan="6"><?php esc_html_e('No invoices yet.', 'pms'); ?></td></tr><?php endif; ?>
+            <div class="pms-table-wrap"><table class="pms-table"><thead><tr><th>Invoice</th><th>Customer</th><th>Issue / Due</th><th>Status</th><th>Total</th><th>Balance</th><th>Actions</th></tr></thead><tbody>
+            <?php foreach ($invoices as $invoice) : ?><tr><td><strong><?php echo esc_html($invoice->invoice_number); ?></strong><br><small><?php echo ! empty($invoice->vat_inclusive) ? 'VAT inclusive' : 'VAT exclusive'; ?></small></td><td><?php echo esc_html($invoice->customer_name); ?><br><small><?php echo esc_html($invoice->customer_email); ?></small></td><td><?php echo esc_html($invoice->issue_date); ?><br><small><?php echo esc_html($invoice->due_date ?: '—'); ?></small></td><td><span class="pms-status"><?php echo esc_html(ucfirst($invoice->status)); ?></span></td><td><?php echo $money($invoice->total, $invoice->currency); ?></td><td><?php echo $money($invoice->balance_due, $invoice->currency); ?></td><td><div class="pms-invoice-actions"><a class="pms-btn pms-btn-small" target="_blank" href="<?php echo esc_url(admin_url('admin.php?page=pms-invoicing&pms_invoice_preview=' . (int) $invoice->id)); ?>">Preview</a><a class="pms-btn pms-btn-small" href="<?php echo esc_url(admin_url('admin.php?page=pms-invoicing&pms_invoice_download=' . (int) $invoice->id)); ?>">PDF</a><form method="post" class="pms-inline-form"><?php wp_nonce_field('pms_invoicing_manage', 'pms_invoicing_nonce'); ?><input type="hidden" name="pms_invoice_action" value="email_invoice"><input type="hidden" name="invoice_id" value="<?php echo (int) $invoice->id; ?>"><input type="hidden" name="recipient_email" value="<?php echo esc_attr($invoice->customer_email); ?>"><button class="pms-btn pms-btn-small pms-btn-primary" type="submit" <?php disabled(! is_email($invoice->customer_email)); ?>>Email PDF</button></form></div></td></tr><?php endforeach; ?>
+            <?php if (! $invoices) : ?><tr><td colspan="7"><?php esc_html_e('No invoices yet.', 'pms'); ?></td></tr><?php endif; ?>
             </tbody></table></div>
         </div>
     <?php endif; ?>
@@ -254,4 +295,30 @@ $tabs = [
             </div>
         </div>
     <?php endif; ?>
-</div>
+</div><script>
+(function(){
+    const type = document.getElementById('pms-invoice-recipient-type');
+    const client = document.getElementById('pms-invoice-client');
+    const tenant = document.getElementById('pms-invoice-tenant');
+    const clientField = document.getElementById('pms-invoice-client-field');
+    const tenantField = document.getElementById('pms-invoice-tenant-field');
+    const name = document.getElementById('pms-invoice-recipient-name');
+    const email = document.getElementById('pms-invoice-recipient-email');
+    if (!type) return;
+    function sync(){
+        const isClient = type.value === 'client';
+        const isTenant = type.value === 'tenant';
+        clientField.style.display = isClient ? '' : 'none';
+        tenantField.style.display = isTenant ? '' : 'none';
+        const source = isClient ? client : (isTenant ? tenant : null);
+        if (source && source.selectedOptions[0]) {
+            name.value = source.selectedOptions[0].dataset.name || '';
+            email.value = source.selectedOptions[0].dataset.email || '';
+        }
+    }
+    type.addEventListener('change', sync);
+    client.addEventListener('change', sync);
+    tenant.addEventListener('change', sync);
+    sync();
+})();
+</script>

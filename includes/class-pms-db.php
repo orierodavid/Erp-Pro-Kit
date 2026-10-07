@@ -29,6 +29,12 @@ class PMS_DB
         return $wpdb->prefix . 'pms_departments';
     }
 
+    public static function projects_table(): string
+    {
+        global $wpdb;
+        return $wpdb->prefix . 'pms_projects';
+    }
+
     public static function tasks_table(): string
     {
         global $wpdb;
@@ -78,6 +84,7 @@ class PMS_DB
 
         $branches = self::branches_table();
         $departments = self::departments_table();
+        $projects = self::projects_table();
         $tasks = self::tasks_table();
         $attendance = self::attendance_table();
         $leave = self::leave_table();
@@ -86,6 +93,21 @@ class PMS_DB
         $comments = self::comments_table();
 
         return "
+CREATE TABLE {$projects} (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(191) NOT NULL,
+    description TEXT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'active',
+    start_date DATE NULL,
+    end_date DATE NULL,
+    owner_id BIGINT UNSIGNED NULL,
+    created_at DATETIME NULL,
+    updated_at DATETIME NULL,
+    PRIMARY KEY  (id),
+    KEY status (status),
+    KEY owner_id (owner_id)
+) {$charset_collate};
+
 CREATE TABLE {$branches} (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(191) NOT NULL,
@@ -111,6 +133,7 @@ CREATE TABLE {$departments} (
 CREATE TABLE {$tasks} (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     title VARCHAR(191) NOT NULL,
+    project_id BIGINT UNSIGNED NULL,
     description TEXT NULL,
     status VARCHAR(32) NOT NULL DEFAULT 'todo',
     priority VARCHAR(32) NOT NULL DEFAULT 'medium',
@@ -134,6 +157,7 @@ CREATE TABLE {$tasks} (
     updated_at DATETIME NULL,
     PRIMARY KEY  (id),
     KEY assigned_to (assigned_to),
+    KEY project_id (project_id),
     KEY status (status)
 ) {$charset_collate};
 
@@ -206,6 +230,79 @@ CREATE TABLE {$comments} (
     }
 
     // ---- Query helpers (equivalent of your old Eloquent scopes) ----
+
+    public static function get_projects(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results('SELECT p.*, u.display_name AS owner_name, COUNT(t.id) AS task_count FROM ' . self::projects_table() . ' p LEFT JOIN ' . $wpdb->users . ' u ON u.ID = p.owner_id LEFT JOIN ' . self::tasks_table() . ' t ON t.project_id = p.id GROUP BY p.id ORDER BY p.created_at DESC, p.name ASC');
+    }
+
+    public static function get_project(int $id): ?object
+    {
+        global $wpdb;
+        return $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::projects_table() . ' WHERE id = %d', $id)) ?: null;
+    }
+
+    public static function create_project(array $data): int
+    {
+        global $wpdb;
+        $wpdb->insert(self::projects_table(), [
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'status' => $data['status'],
+            'start_date' => $data['start_date'] ?: null,
+            'end_date' => $data['end_date'] ?: null,
+            'owner_id' => $data['owner_id'] ?: null,
+            'created_at' => current_time('mysql'),
+            'updated_at' => current_time('mysql'),
+        ]);
+        return (int) $wpdb->insert_id;
+    }
+
+    public static function update_project(int $id, array $data): void
+    {
+        global $wpdb;
+        $wpdb->update(self::projects_table(), [
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'status' => $data['status'],
+            'start_date' => $data['start_date'] ?: null,
+            'end_date' => $data['end_date'] ?: null,
+            'owner_id' => $data['owner_id'] ?: null,
+            'updated_at' => current_time('mysql'),
+        ], ['id' => $id]);
+    }
+
+    public static function delete_project(int $id): void
+    {
+        global $wpdb;
+        $wpdb->update(self::tasks_table(), ['project_id' => null, 'updated_at' => current_time('mysql')], ['project_id' => $id]);
+        $wpdb->delete(self::projects_table(), ['id' => $id]);
+    }
+
+    public static function get_project_tasks(int $project_id): array
+    {
+        global $wpdb;
+        return $wpdb->get_results($wpdb->prepare('SELECT t.*, u.display_name AS assignee_name FROM ' . self::tasks_table() . ' t LEFT JOIN ' . $wpdb->users . ' u ON u.ID = t.assigned_to WHERE t.project_id = %d ORDER BY t.due_date ASC, t.created_at DESC', $project_id));
+    }
+
+    public static function set_task_project(int $task_id, ?int $project_id): void
+    {
+        global $wpdb;
+        $wpdb->update(self::tasks_table(), ['project_id' => $project_id ?: null, 'updated_at' => current_time('mysql')], ['id' => $task_id]);
+    }
+
+    public static function assignment_rows(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results('SELECT t.id, t.title, t.status, t.priority, t.due_date, t.project_id, t.assigned_to, p.name AS project_name, u.display_name AS assignee_name FROM ' . self::tasks_table() . ' t LEFT JOIN ' . self::projects_table() . ' p ON p.id = t.project_id LEFT JOIN ' . $wpdb->users . ' u ON u.ID = t.assigned_to ORDER BY t.assigned_to IS NULL DESC, t.due_date ASC, t.created_at DESC');
+    }
+
+    public static function project_report_rows(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results('SELECT p.id, p.name, p.status, p.start_date, p.end_date, u.display_name AS owner_name, COUNT(t.id) AS total_tasks, SUM(CASE WHEN t.status = "done" THEN 1 ELSE 0 END) AS completed_tasks, SUM(CASE WHEN t.status = "in_progress" THEN 1 ELSE 0 END) AS in_progress_tasks, SUM(CASE WHEN t.status = "todo" THEN 1 ELSE 0 END) AS todo_tasks FROM ' . self::projects_table() . ' p LEFT JOIN ' . $wpdb->users . ' u ON u.ID = p.owner_id LEFT JOIN ' . self::tasks_table() . ' t ON t.project_id = p.id GROUP BY p.id ORDER BY p.created_at DESC');
+    }
 
     public static function get_branches(): array
     {

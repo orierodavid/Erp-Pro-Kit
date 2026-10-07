@@ -80,8 +80,9 @@ class PMS_Assets
      */
     private function dynamic_color_css(): string
     {
-        $primary = get_option('pms_primary_color', '#e91e63');
-        $primary = sanitize_hex_color($primary) ?: '#e91e63';
+        $default = PMS_Roles::current_user_is_pms_admin() ? '#2d67ef' : '#ff7900';
+        $primary = get_option('pms_primary_color', $default);
+        $primary = sanitize_hex_color($primary) ?: $default;
         $dark = PMS_Settings::darken($primary, 0.18);
         $rgb = PMS_Settings::to_rgb($primary);
 

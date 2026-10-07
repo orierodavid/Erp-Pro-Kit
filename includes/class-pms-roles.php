@@ -251,6 +251,15 @@ class PMS_Roles
     public static function role_definitions_for_ui(): array
     {
         $definitions = [];
+        $administrator = get_role('administrator');
+        if ($administrator) {
+            $definitions['administrator'] = [
+                'label' => __('Administrator', 'pms'),
+                'caps' => $administrator->capabilities,
+                'built_in' => true,
+                'protected' => true,
+            ];
+        }
         foreach (self::managed_role_slugs() as $slug) {
             $role = get_role($slug);
             if ($role) {
@@ -258,6 +267,7 @@ class PMS_Roles
                     'label' => self::role_label($slug),
                     'caps' => $role->capabilities,
                     'built_in' => true,
+                    'protected' => false,
                 ];
             }
         }
@@ -269,6 +279,7 @@ class PMS_Roles
                         'label' => translate_user_role($definition['name']),
                         'caps' => $role->capabilities,
                         'built_in' => false,
+                        'protected' => false,
                     ];
                 }
             }
@@ -278,6 +289,9 @@ class PMS_Roles
 
     public static function save_role_capabilities(string $slug, array $caps): bool
     {
+        if ($slug === 'administrator') {
+            return false;
+        }
         $role = get_role($slug);
         if (! $role) {
             return false;

@@ -138,8 +138,14 @@ foreach ($pms_page_titles as $item) {
 
             <div class="pms-topbar-spacer"></div>
 
+            <div class="pms-workspace-pill pms-workspace-pill-staff" aria-label="<?php esc_attr_e('Staff Workspace', 'pms'); ?>">
+                <span class="dashicons dashicons-groups"></span>
+                <span><?php esc_html_e('Staff Workspace', 'pms'); ?></span>
+            </div>
+
             <div class="pms-topbar-notification" aria-hidden="true">
                 <span class="dashicons dashicons-bell"></span>
+                <span class="pms-notification-badge">3</span>
             </div>
 
             <div class="pms-topbar-account">

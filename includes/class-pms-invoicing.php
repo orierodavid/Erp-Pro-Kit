@@ -65,6 +65,8 @@ CREATE TABLE {$quotes} (
     currency VARCHAR(10) NOT NULL DEFAULT 'USD',
     subtotal DECIMAL(18,2) NOT NULL DEFAULT 0,
     tax DECIMAL(18,2) NOT NULL DEFAULT 0,
+    vat_rate DECIMAL(7,2) NOT NULL DEFAULT 0,
+    vat_inclusive TINYINT(1) NOT NULL DEFAULT 0,
     total DECIMAL(18,2) NOT NULL DEFAULT 0,
     notes TEXT NULL,
     created_by BIGINT UNSIGNED NULL,

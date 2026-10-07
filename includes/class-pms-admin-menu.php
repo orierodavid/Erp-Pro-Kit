@@ -46,6 +46,7 @@ class PMS_Admin_Menu
         }
         add_submenu_page('pms-dashboard', __('People', 'pms'), __('People', 'pms'), 'pms_manage_users', 'pms-users', [$this, 'render_users']);
         add_submenu_page(null, __('Add person', 'pms'), __('Add person', 'pms'), 'pms_manage_users', 'pms-user-new', [$this, 'render_user_new']);
+        add_submenu_page(null, __('Employee profile', 'pms'), __('Employee profile', 'pms'), 'pms_manage_users', 'pms-user-edit', [$this, 'render_user_edit']);
         add_submenu_page('pms-dashboard', __('Roles & Permissions', 'pms'), __('Roles & Permissions', 'pms'), 'pms_manage_users', 'pms-roles', [$this, 'render_roles']);
         add_submenu_page('pms-dashboard', __('Departments', 'pms'), __('Departments', 'pms'), 'pms_manage_departments', 'pms-departments', [$this, 'render_departments']);
         add_submenu_page('pms-dashboard', __('Branches', 'pms'), __('Branches', 'pms'), 'pms_manage_branches', 'pms-branches', [$this, 'render_branches']);
@@ -153,6 +154,79 @@ class PMS_Admin_Menu
         }, ARRAY_FILTER_USE_BOTH);
         $departments = PMS_DB::get_departments();
         include PMS_PLUGIN_DIR . 'admin/views/user-new.php';
+    }
+
+    public function render_user_edit(): void
+    {
+        if (! current_user_can('pms_manage_users')) {
+            wp_die(__('You do not have permission to view this page.', 'pms'));
+        }
+
+        $user_id = isset($_GET['user_id']) ? absint($_GET['user_id']) : 0;
+        $user = $user_id ? get_user_by('id', $user_id) : false;
+
+        if (! $user) {
+            wp_die(__('Employee not found.', 'pms'));
+        }
+
+        $error = '';
+        $success = '';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pms_update_person'])) {
+            check_admin_referer('pms_update_person_' . $user_id, 'pms_update_person_nonce');
+
+            $first_name = isset($_POST['first_name']) ? sanitize_text_field(wp_unslash($_POST['first_name'])) : '';
+            $last_name = isset($_POST['last_name']) ? sanitize_text_field(wp_unslash($_POST['last_name'])) : '';
+            $email = isset($_POST['email']) ? sanitize_email(wp_unslash($_POST['email'])) : '';
+            $role_slug = isset($_POST['role']) ? sanitize_key(wp_unslash($_POST['role'])) : '';
+            $designation = isset($_POST['designation']) ? sanitize_text_field(wp_unslash($_POST['designation'])) : '';
+            $department_id = isset($_POST['department_id']) ? absint($_POST['department_id']) : 0;
+            $password = isset($_POST['password']) ? (string) wp_unslash($_POST['password']) : '';
+
+            if (! is_email($email)) {
+                $error = __('Enter a valid email address.', 'pms');
+            } elseif (email_exists($email) && (int) email_exists($email) !== $user_id) {
+                $error = __('That email address is already in use.', 'pms');
+            } elseif (! get_role($role_slug)) {
+                $error = __('Select a valid role.', 'pms');
+            } elseif ($role_slug === 'administrator' && ! current_user_can('manage_options')) {
+                $error = __('Only a WordPress administrator can assign the Administrator role.', 'pms');
+            } elseif ($password !== '' && strlen($password) < 8) {
+                $error = __('Password must be at least 8 characters.', 'pms');
+            } else {
+                $updated = wp_update_user([
+                    'ID' => $user_id,
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'user_email' => $email,
+                    'display_name' => trim($first_name . ' ' . $last_name) ?: $user->user_login,
+                ]);
+
+                if (is_wp_error($updated)) {
+                    $error = $updated->get_error_message();
+                } else {
+                    $user->set_role($role_slug);
+                    if ($password !== '') {
+                        wp_set_password($password, $user_id);
+                    }
+                    update_user_meta($user_id, 'pms_designation', $designation);
+                    if ($department_id) {
+                        update_user_meta($user_id, 'pms_department_id', $department_id);
+                    } else {
+                        delete_user_meta($user_id, 'pms_department_id');
+                    }
+                    $success = __('Employee profile updated successfully.', 'pms');
+                    $user = get_user_by('id', $user_id);
+                }
+            }
+        }
+
+        $roles = PMS_Roles::role_definitions_for_ui();
+        if (! current_user_can('manage_options')) {
+            unset($roles['administrator']);
+        }
+        $departments = PMS_DB::get_departments();
+        include PMS_PLUGIN_DIR . 'admin/views/user-edit.php';
     }
 
     public function render_roles(): void

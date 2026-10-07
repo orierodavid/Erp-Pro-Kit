@@ -3,14 +3,18 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-$records = PMS_Attendance::recent(100);
+$can_view_all = current_user_can('pms_view_all_attendance');
+$records = $can_view_all ? PMS_Attendance::recent(100) : PMS_Attendance::recent_for_user(get_current_user_id(), 100);
 
 include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
 ?>
 <div class="pms-page-header">
     <div>
-        <p class="pms-eyebrow"><?php esc_html_e('HR / Staff', 'pms'); ?></p>
+        <p class="pms-eyebrow"><?php esc_html_e('Workforce', 'pms'); ?></p>
         <h1><?php esc_html_e('Attendance', 'pms'); ?></h1>
+        <?php if (! $can_view_all) : ?>
+            <p class="pms-page-description"><?php esc_html_e('Your attendance history and today’s workday status.', 'pms'); ?></p>
+        <?php endif; ?>
     </div>
 </div>
 

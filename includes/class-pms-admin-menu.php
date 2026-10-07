@@ -116,7 +116,13 @@ class PMS_Admin_Menu
                 if (! $role) {
                     $error = __('Select a valid role.', 'pms');
                 } else {
-                    $password = $values['password'] !== '' ? $values['password'] : wp_generate_password(20, true, true);
+                    $password = $values['password'];
+                    if (strlen($password) < 8) {
+                        $error = __('Password must be at least 8 characters.', 'pms');
+                    }
+                    if ($error !== '') {
+                        $user_id = 0;
+                    } else {
                     $user_id = wp_create_user($values['username'], $password, $values['email']);
                     if (is_wp_error($user_id)) {
                         $error = $user_id->get_error_message();
@@ -132,6 +138,7 @@ class PMS_Admin_Menu
                         update_user_meta($user_id, 'pms_department_id', $values['department_id'] !== '' ? (int) $values['department_id'] : 0);
                         $success = sprintf(__('Person created successfully. %s', 'pms'), esc_html($values['username']));
                         $values = ['username' => '', 'email' => '', 'first_name' => '', 'last_name' => '', 'password' => '', 'role' => PMS_Roles::STAFF_ROLE, 'designation' => '', 'department_id' => ''];
+                    }
                     }
                 }
             }

@@ -52,6 +52,9 @@ class PMS_Admin_Menu
             add_submenu_page('pms-dashboard', __('Assignments', 'pms'), __('Assignments', 'pms'), 'pms_manage_tasks', 'pms-assignments', [$this, 'render_assignments']);
             add_submenu_page('pms-dashboard', __('Task Reports', 'pms'), __('Task Reports', 'pms'), 'pms_view_reports', 'pms-task-reports', [$this, 'render_task_reports']);
         }
+        if (PMS_Modules::is_active('crm') && current_user_can('pms_manage_crm')) {
+            add_submenu_page('pms-dashboard', __('CRM / Sales', 'pms'), __('CRM / Sales', 'pms'), 'pms_manage_crm', 'pms-crm', [$this, 'render_crm']);
+        }
         if (PMS_Modules::is_active('payroll') && current_user_can('pms_manage_payroll')) {
             add_submenu_page('pms-dashboard', __('Payroll', 'pms'), __('Payroll', 'pms'), 'pms_manage_payroll', 'pms-payroll', [$this, 'render_payroll']);
             add_submenu_page(null, __('Salary Details', 'pms'), __('Salary Details', 'pms'), 'pms_manage_payroll', 'pms-payroll-salary', [$this, 'render_payroll']);
@@ -101,6 +104,12 @@ class PMS_Admin_Menu
             wp_die(__('You do not have permission to view this page.', 'pms'));
         }
         include PMS_PLUGIN_DIR . 'admin/views/leave.php';
+    }
+
+    public function render_crm(): void
+    {
+        if (! PMS_Modules::is_active('crm') || ! current_user_can('pms_manage_crm')) { wp_die(__('You do not have permission to view this page.', 'pms')); }
+        include PMS_PLUGIN_DIR . 'admin/views/crm.php';
     }
 
     public function render_payroll(): void

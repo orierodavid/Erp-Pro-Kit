@@ -66,6 +66,17 @@ class PMS_Attendance
         return ['success' => $updated !== false];
     }
 
+    public static function recent_for_user(int $user_id, int $limit = 100): array
+    {
+        global $wpdb;
+        $limit = max(1, min(500, $limit));
+
+        return $wpdb->get_results($wpdb->prepare(
+            'SELECT * FROM ' . PMS_DB::attendance_table() . ' WHERE user_id = %d ORDER BY created_at DESC LIMIT ' . $limit,
+            $user_id
+        ));
+    }
+
     public static function recent(int $limit = 100): array
     {
         global $wpdb;

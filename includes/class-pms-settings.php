@@ -31,6 +31,73 @@ class PMS_Settings
             'default'           => get_bloginfo('name'),
         ]);
 
+
+        register_setting(self::OPTION_GROUP, 'pms_company_logo_id', [
+            'type' => 'integer',
+            'sanitize_callback' => 'absint',
+            'default' => 0,
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_company_address', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_textarea_field',
+            'default' => '',
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_company_city', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_company_state', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_company_country', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_company_phone', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_company_email', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_email',
+            'default' => get_option('admin_email'),
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_company_website', [
+            'type' => 'string',
+            'sanitize_callback' => 'esc_url_raw',
+            'default' => home_url('/'),
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_bank_name', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_bank_account_name', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_bank_account_number', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_bank_sort_code', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+        ]);
+        register_setting(self::OPTION_GROUP, 'pms_payment_instructions', [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_textarea_field',
+            'default' => '',
+        ]);
+
         register_setting(self::OPTION_GROUP, 'pms_primary_color', [
             'type'              => 'string',
             'sanitize_callback' => [$this, 'sanitize_color'],
@@ -76,6 +143,30 @@ class PMS_Settings
         add_settings_field('pms_company_name', __('Company name', 'pms'), [$this, 'field_company_name'], 'pms-settings', 'pms_branding');
         add_settings_field('pms_primary_color', __('Primary color', 'pms'), [$this, 'field_primary_color'], 'pms-settings', 'pms_branding');
 
+
+        add_settings_section('pms_company_billing', __('Company & Billing', 'pms'), function () {
+            echo '<p class="description">' . esc_html__('These details are reused automatically on invoices, PDF previews and invoice emails.', 'pms') . '</p>';
+        }, 'pms-settings');
+
+        add_settings_field('pms_company_logo_id', __('Company logo', 'pms'), [$this, 'field_company_logo'], 'pms-settings', 'pms_company_billing');
+        add_settings_field('pms_company_address', __('Company address', 'pms'), [$this, 'field_company_address'], 'pms-settings', 'pms_company_billing');
+        add_settings_field('pms_company_city', __('City', 'pms'), [$this, 'field_company_city'], 'pms-settings', 'pms_company_billing');
+        add_settings_field('pms_company_state', __('State / Region', 'pms'), [$this, 'field_company_state'], 'pms-settings', 'pms_company_billing');
+        add_settings_field('pms_company_country', __('Country', 'pms'), [$this, 'field_company_country'], 'pms-settings', 'pms_company_billing');
+        add_settings_field('pms_company_phone', __('Phone', 'pms'), [$this, 'field_company_phone'], 'pms-settings', 'pms_company_billing');
+        add_settings_field('pms_company_email', __('Email', 'pms'), [$this, 'field_company_email'], 'pms-settings', 'pms_company_billing');
+        add_settings_field('pms_company_website', __('Website', 'pms'), [$this, 'field_company_website'], 'pms-settings', 'pms_company_billing');
+
+        add_settings_section('pms_banking', __('Banking & Payment Details', 'pms'), function () {
+            echo '<p class="description">' . esc_html__('Saved once here and automatically displayed on invoices. Do not enter these details on individual invoices.', 'pms') . '</p>';
+        }, 'pms-settings');
+
+        add_settings_field('pms_bank_name', __('Bank name', 'pms'), [$this, 'field_bank_name'], 'pms-settings', 'pms_banking');
+        add_settings_field('pms_bank_account_name', __('Account name', 'pms'), [$this, 'field_bank_account_name'], 'pms-settings', 'pms_banking');
+        add_settings_field('pms_bank_account_number', __('Account number', 'pms'), [$this, 'field_bank_account_number'], 'pms-settings', 'pms_banking');
+        add_settings_field('pms_bank_sort_code', __('Sort / Routing code', 'pms'), [$this, 'field_bank_sort_code'], 'pms-settings', 'pms_banking');
+        add_settings_field('pms_payment_instructions', __('Payment instructions', 'pms'), [$this, 'field_payment_instructions'], 'pms-settings', 'pms_banking');
+
         add_settings_section('pms_general', __('General', 'pms'), '__return_false', 'pms-settings');
 
         add_settings_field('pms_default_geofence_radius_m', __('Default task geofence radius (metres)', 'pms'), [$this, 'field_geofence_radius'], 'pms-settings', 'pms_general');
@@ -98,6 +189,88 @@ class PMS_Settings
         $sanitized = sanitize_hex_color((string) $value);
 
         return $sanitized ?: '#e91e63';
+    }
+
+
+    public function field_company_logo(): void
+    {
+        $id = absint(get_option('pms_company_logo_id', 0));
+        $url = $id ? wp_get_attachment_image_url($id, 'medium') : '';
+        wp_enqueue_media();
+        echo '<div class="pms-company-logo-setting">';
+        echo '<input type="hidden" id="pms_company_logo_id" name="pms_company_logo_id" value="' . esc_attr($id) . '">';
+        echo '<div id="pms-company-logo-preview">';
+        if ($url) {
+            echo '<img src="' . esc_url($url) . '" alt="' . esc_attr__('Company logo', 'pms') . '" style="max-width:220px;max-height:90px;object-fit:contain;">';
+        } else {
+            echo '<span class="description">' . esc_html__('No company logo selected.', 'pms') . '</span>';
+        }
+        echo '</div>';
+        echo '<p><button type="button" class="button" id="pms-select-company-logo">' . esc_html__('Choose logo', 'pms') . '</button> ';
+        echo '<button type="button" class="button" id="pms-remove-company-logo">' . esc_html__('Remove logo', 'pms') . '</button></p>';
+        echo '</div>';
+        echo '<script>
+        jQuery(function($){
+            var frame;
+            $("#pms-select-company-logo").on("click", function(e){
+                e.preventDefault();
+                if(frame){ frame.open(); return; }
+                frame = wp.media({title:"Choose company logo", button:{text:"Use this logo"}, multiple:false});
+                frame.on("select", function(){
+                    var a=frame.state().get("selection").first().toJSON();
+                    $("#pms_company_logo_id").val(a.id);
+                    $("#pms-company-logo-preview").html("<img src=\"" + (a.sizes && a.sizes.medium ? a.sizes.medium.url : a.url) + "\" alt=\"Company logo\" style=\"max-width:220px;max-height:90px;object-fit:contain;\">");
+                });
+                frame.open();
+            });
+            $("#pms-remove-company-logo").on("click", function(e){
+                e.preventDefault();
+                $("#pms_company_logo_id").val("0");
+                $("#pms-company-logo-preview").html("<span class=\"description\">No company logo selected.</span>");
+            });
+        });
+        </script>';
+    }
+
+    public function field_company_address(): void { printf('<textarea class="large-text" rows="3" name="pms_company_address">%s</textarea>', esc_textarea(get_option('pms_company_address', ''))); }
+    public function field_company_city(): void { printf('<input type="text" class="regular-text" name="pms_company_city" value="%s">', esc_attr(get_option('pms_company_city', ''))); }
+    public function field_company_state(): void { printf('<input type="text" class="regular-text" name="pms_company_state" value="%s">', esc_attr(get_option('pms_company_state', ''))); }
+    public function field_company_country(): void { printf('<input type="text" class="regular-text" name="pms_company_country" value="%s">', esc_attr(get_option('pms_company_country', ''))); }
+    public function field_company_phone(): void { printf('<input type="text" class="regular-text" name="pms_company_phone" value="%s">', esc_attr(get_option('pms_company_phone', ''))); }
+    public function field_company_email(): void { printf('<input type="email" class="regular-text" name="pms_company_email" value="%s">', esc_attr(get_option('pms_company_email', get_option('admin_email')))); }
+    public function field_company_website(): void { printf('<input type="url" class="regular-text" name="pms_company_website" value="%s">', esc_attr(get_option('pms_company_website', home_url('/')))); }
+    public function field_bank_name(): void { printf('<input type="text" class="regular-text" name="pms_bank_name" value="%s">', esc_attr(get_option('pms_bank_name', ''))); }
+    public function field_bank_account_name(): void { printf('<input type="text" class="regular-text" name="pms_bank_account_name" value="%s">', esc_attr(get_option('pms_bank_account_name', ''))); }
+    public function field_bank_account_number(): void { printf('<input type="text" class="regular-text" name="pms_bank_account_number" value="%s">', esc_attr(get_option('pms_bank_account_number', ''))); }
+    public function field_bank_sort_code(): void { printf('<input type="text" class="regular-text" name="pms_bank_sort_code" value="%s">', esc_attr(get_option('pms_bank_sort_code', ''))); }
+    public function field_payment_instructions(): void { printf('<textarea class="large-text" rows="3" name="pms_payment_instructions">%s</textarea>', esc_textarea(get_option('pms_payment_instructions', ''))); }
+
+    public static function company_profile(): array
+    {
+        $logo_id = absint(get_option('pms_company_logo_id', 0));
+        return [
+            'name' => get_option('pms_company_name', get_bloginfo('name')),
+            'logo_id' => $logo_id,
+            'logo_url' => $logo_id ? wp_get_attachment_image_url($logo_id, 'full') : '',
+            'address' => get_option('pms_company_address', ''),
+            'city' => get_option('pms_company_city', ''),
+            'state' => get_option('pms_company_state', ''),
+            'country' => get_option('pms_company_country', ''),
+            'phone' => get_option('pms_company_phone', ''),
+            'email' => get_option('pms_company_email', get_option('admin_email')),
+            'website' => get_option('pms_company_website', home_url('/')),
+        ];
+    }
+
+    public static function banking_details(): array
+    {
+        return [
+            'bank_name' => get_option('pms_bank_name', ''),
+            'account_name' => get_option('pms_bank_account_name', ''),
+            'account_number' => get_option('pms_bank_account_number', ''),
+            'sort_code' => get_option('pms_bank_sort_code', ''),
+            'instructions' => get_option('pms_payment_instructions', ''),
+        ];
     }
 
     public function field_company_name(): void

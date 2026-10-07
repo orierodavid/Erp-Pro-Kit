@@ -23,6 +23,27 @@ class PMS_REST_API
 
     public function register_routes(): void
     {
+        register_rest_route(self::NAMESPACE, '/attendance/status', [
+            'methods' => 'GET',
+            'callback' => [$this, 'attendance_status'],
+            'permission_callback' => fn () => current_user_can('pms_clock_in_out'),
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/attendance/clock-in', [
+            'methods' => 'POST',
+            'callback' => [$this, 'attendance_clock_in'],
+            'permission_callback' => fn () => current_user_can('pms_clock_in_out'),
+            'args' => [
+                'lat' => ['required' => false, 'type' => 'number'],
+                'lng' => ['required' => false, 'type' => 'number'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/attendance/clock-out', [
+            'methods' => 'POST',
+            'callback' => [$this, 'attendance_clock_out'],
+            'permission_callback' => fn () => current_user_can('pms_clock_in_out'),
+        ]);
         register_rest_route(self::NAMESPACE, '/tasks/(?P<id>\d+)/start', [
             'methods'             => 'POST',
             'callback'            => [$this, 'start_task'],
@@ -70,6 +91,41 @@ class PMS_REST_API
         $lng = $request->has_param('lng') ? (float) $request->get_param('lng') : null;
 
         $result = PMS_DB::start_task($task_id, $lat, $lng);
+
+        if (! $result['success']) {
+            return new WP_REST_Response(['message' => $result['message']], 422);
+        }
+
+        return new WP_REST_Response(['success' => true]);
+    }
+
+    public function attendance_status(): WP_REST_Response
+    {
+        $record = PMS_Attendance::today_for_user(get_current_user_id());
+
+        return new WP_REST_Response([
+            'status' => $record ? $record->status : 'not_started',
+            'clock_in' => $record ? $record->clock_in : null,
+            'clock_out' => $record ? $record->clock_out : null,
+        ]);
+    }
+
+    public function attendance_clock_in(WP_REST_Request $request): WP_REST_Response
+    {
+        $lat = $request->has_param('lat') ? (float) $request->get_param('lat') : null;
+        $lng = $request->has_param('lng') ? (float) $request->get_param('lng') : null;
+        $result = PMS_Attendance::clock_in(get_current_user_id(), $lat, $lng);
+
+        if (! $result['success']) {
+            return new WP_REST_Response(['message' => $result['message']], 422);
+        }
+
+        return new WP_REST_Response(['success' => true]);
+    }
+
+    public function attendance_clock_out(): WP_REST_Response
+    {
+        $result = PMS_Attendance::clock_out(get_current_user_id());
 
         if (! $result['success']) {
             return new WP_REST_Response(['message' => $result['message']], 422);

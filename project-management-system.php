@@ -23,7 +23,7 @@ define('PMS_VERSION', '0.7.0');
 define('PMS_PLUGIN_FILE', __FILE__);
 define('PMS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PMS_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('PMS_DB_VERSION', '1.8.0'); // bump this + update Activator when schema/role changes
+define('PMS_DB_VERSION', '1.9.0'); // bump this + update Activator when schema/role changes
 
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-activator.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-deactivator.php';
@@ -36,6 +36,7 @@ require_once PMS_PLUGIN_DIR . 'includes/class-pms-db.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-payroll.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-crm.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-invoicing.php';
+require_once PMS_PLUGIN_DIR . 'includes/class-pms-invoice-document.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-expenses.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-inventory.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-real-estate.php';

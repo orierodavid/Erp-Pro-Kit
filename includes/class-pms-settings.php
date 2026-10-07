@@ -61,7 +61,7 @@ class PMS_Settings
             'default'           => 15,
         ]);
 
-        register_setting(self::OPTION_GROUP, PMS_Modules::option_name(), ['type'=>'array','sanitize_callback'=>static function ($value) { return is_array($value) ? array_map('sanitize_key', $value) : []; },'default'=>['hr','tasks']]);
+        register_setting(self::OPTION_GROUP, PMS_Modules::option_name(), ['type'=>'array','sanitize_callback'=>static function ($value) { return is_array($value) ? array_map('sanitize_key', $value) : []; },'default'=>['tasks']]);
 
         register_setting(self::OPTION_GROUP, 'pms_delete_data_on_uninstall', [
             'type'              => 'boolean',

@@ -24,6 +24,7 @@ $pms_nav_items = [
     ['slug' => 'pms-my-tasks', 'label' => __('My Tasks', 'pms'), 'icon' => 'dashicons-yes-alt', 'cap' => 'pms_view_assigned_tasks', 'module' => 'tasks'],
     ['slug' => 'pms-tasks', 'label' => __('Tasks', 'pms'), 'icon' => 'dashicons-list-view', 'cap' => 'pms_manage_tasks', 'module' => 'tasks'],
     ['slug' => 'pms-attendance', 'label' => __('Attendance', 'pms'), 'icon' => 'dashicons-clock', 'cap' => 'pms_view_attendance', 'module' => 'attendance'],
+    ['slug' => 'pms-my-account', 'label' => __('My Profile', 'pms'), 'icon' => 'dashicons-admin-users', 'cap' => 'read'],
 ];
 
 $pms_org_items = [
@@ -116,7 +117,7 @@ $pms_visible_system = array_filter($pms_system_items, fn ($item) => current_user
             <div class="pms-topbar-title">
                 <?php
                 $pms_page_titles = array_merge($pms_nav_items, $pms_org_items, $pms_system_items, [
-                    ['slug' => 'pms-my-account', 'label' => __('My Account', 'pms')],
+                    ['slug' => 'pms-my-account', 'label' => __('My Profile', 'pms')],
                 ]);
                 $pms_title = __('Project Management', 'pms');
                 foreach ($pms_page_titles as $item) {

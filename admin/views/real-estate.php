@@ -28,6 +28,10 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
         $id=absint($_POST['entity_id'] ?? 0);
         if ($id) PMS_Real_Estate::delete($type,$id);
         echo '<div class="pms-notice pms-notice-success">'.esc_html__('Record deleted.','pms').'</div>';
+    } elseif ($action==='send_test_email') {
+        $test_to=sanitize_email(get_option('admin_email'));
+        $sent=PMS_Real_Estate::send_email($test_to,'ERP email test','This is a test email from the ERP Real Estate communication system.');
+        echo $sent ? '<div class="pms-notice pms-notice-success">Test email submitted to '.$test_to.'. Check the mailbox and spam folder.</div>' : '<div class="pms-notice pms-notice-error">Test email could not be submitted. The WordPress mail transport needs attention.</div>';
     } elseif ($action==='send_email') {
         $recipient_type=sanitize_key(wp_unslash($_POST['recipient_type'] ?? ''));
         $recipient_id=absint($_POST['recipient_id'] ?? 0);
@@ -179,7 +183,7 @@ function pms_re_select(string $name,array $rows,string $label): void {
                 <div class="pms-section-head"><div><h2>Email delivery</h2><p>WordPress hands mail to the site's configured mail transport.</p></div></div>
                 <div class="pms-re-email-check"><span class="dashicons dashicons-admin-email"></span><div><strong>Site email</strong><p><?php echo esc_html(get_option('admin_email')); ?></p></div></div>
                 <p class="pms-page-description">For production delivery, configure a reliable SMTP or transactional mail service on the WordPress site. The ERP sends through <code>wp_mail()</code>.</p>
-                <a class="pms-btn" href="<?php echo esc_url(admin_url('options-general.php')); ?>">Open WordPress settings</a>
+                <form method="post" style="display:inline-block;margin-right:8px"><?php wp_nonce_field('pms_real_estate_manage','pms_real_estate_nonce'); ?><input type="hidden" name="pms_re_action" value="send_test_email"><input type="hidden" name="redirect_tab" value="communications"><button class="pms-btn" type="submit">Send test email</button></form><a class="pms-btn" href="<?php echo esc_url(admin_url('options-general.php')); ?>">Open WordPress settings</a>
             </div>
         </div>
     <?php endif; ?>

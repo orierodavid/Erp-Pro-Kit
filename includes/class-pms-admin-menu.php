@@ -47,6 +47,15 @@ class PMS_Admin_Menu
         if (PMS_Modules::is_active('tasks')) {
             add_submenu_page('pms-dashboard', __('Tasks', 'pms'), __('Tasks', 'pms'), 'pms_manage_tasks', 'pms-tasks', [$this, 'render_tasks']);
         }
+        if (PMS_Modules::is_active('payroll') && current_user_can('pms_manage_payroll')) {
+            add_submenu_page('pms-dashboard', __('Payroll', 'pms'), __('Payroll', 'pms'), 'pms_manage_payroll', 'pms-payroll', [$this, 'render_payroll']);
+            add_submenu_page(null, __('Salary Details', 'pms'), __('Salary Details', 'pms'), 'pms_manage_payroll', 'pms-payroll-salary', [$this, 'render_payroll']);
+            add_submenu_page(null, __('Allowances', 'pms'), __('Allowances', 'pms'), 'pms_manage_payroll', 'pms-payroll-allowances', [$this, 'render_payroll']);
+            add_submenu_page(null, __('Deductions', 'pms'), __('Deductions', 'pms'), 'pms_manage_payroll', 'pms-payroll-deductions', [$this, 'render_payroll']);
+            add_submenu_page(null, __('Payslips', 'pms'), __('Payslips', 'pms'), 'pms_manage_payroll', 'pms-payroll-payslips', [$this, 'render_payroll']);
+            add_submenu_page(null, __('Payroll Runs', 'pms'), __('Payroll Runs', 'pms'), 'pms_manage_payroll', 'pms-payroll-runs', [$this, 'render_payroll']);
+            add_submenu_page(null, __('Payroll Reports', 'pms'), __('Payroll Reports', 'pms'), 'pms_manage_payroll', 'pms-payroll-reports', [$this, 'render_payroll']);
+        }
         add_submenu_page('pms-dashboard', __('People', 'pms'), __('People', 'pms'), 'pms_manage_users', 'pms-users', [$this, 'render_users']);
         add_submenu_page(null, __('Add person', 'pms'), __('Add person', 'pms'), 'pms_manage_users', 'pms-user-new', [$this, 'render_user_new']);
         add_submenu_page(null, __('Employee profile', 'pms'), __('Employee profile', 'pms'), 'pms_manage_users', 'pms-user-edit', [$this, 'render_user_edit']);
@@ -87,6 +96,14 @@ class PMS_Admin_Menu
             wp_die(__('You do not have permission to view this page.', 'pms'));
         }
         include PMS_PLUGIN_DIR . 'admin/views/leave.php';
+    }
+
+    public function render_payroll(): void
+    {
+        if (! PMS_Modules::is_active('payroll') || ! current_user_can('pms_manage_payroll')) {
+            wp_die(__('You do not have permission to view this page.', 'pms'));
+        }
+        include PMS_PLUGIN_DIR . 'admin/views/payroll.php';
     }
 
     public function render_tasks(): void

@@ -13,6 +13,7 @@ if (! defined('ABSPATH')) {
 $pms_current_page = isset($_GET['page']) ? sanitize_key(wp_unslash($_GET['page'])) : 'pms-dashboard';
 $pms_user = wp_get_current_user();
 $pms_is_admin = PMS_Roles::current_user_is_pms_admin();
+$pms_can_access_wp_dashboard = PMS_WP_Access::can_access_wp_dashboard();
 $pms_workspace_class = $pms_is_admin ? 'pms-workspace-admin' : 'pms-workspace-staff';
 $pms_company_name = get_option('pms_company_name', get_bloginfo('name'));
 $pms_brand_initial = strtoupper(substr((string) $pms_company_name, 0, 1));
@@ -112,10 +113,17 @@ foreach ($pms_page_titles as $item) {
         </nav>
 
         <div class="pms-shell-account">
-            <a href="<?php echo esc_url(admin_url()); ?>" class="pms-back-link">
-                <span class="dashicons dashicons-arrow-left-alt"></span>
-                <?php esc_html_e('Back to WP Dashboard', 'pms'); ?>
-            </a>
+            <?php if ($pms_can_access_wp_dashboard) : ?>
+                <a href="<?php echo esc_url(admin_url()); ?>" class="pms-back-link">
+                    <span class="dashicons dashicons-arrow-left-alt"></span>
+                    <?php esc_html_e('Back to WP Dashboard', 'pms'); ?>
+                </a>
+            <?php else : ?>
+                <a href="<?php echo esc_url(wp_logout_url(wp_login_url())); ?>" class="pms-back-link">
+                    <span class="dashicons dashicons-exit"></span>
+                    <?php esc_html_e('Logout', 'pms'); ?>
+                </a>
+            <?php endif; ?>
             <div class="pms-account-card">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=pms-my-account')); ?>" class="pms-account-link" title="<?php esc_attr_e('My Account', 'pms'); ?>">
                     <?php echo get_avatar($pms_user->ID, 42); ?>

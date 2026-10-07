@@ -31,7 +31,7 @@ class PMS_Modules
 
     public static function active(): array
     {
-        $saved = get_option(self::OPTION, ['hr', 'tasks']);
+        $saved = get_option(self::OPTION, ['tasks']);
         $saved = is_array($saved) ? array_map('sanitize_key', $saved) : [];
 
         return array_values(array_intersect(array_keys(self::definitions()), $saved));

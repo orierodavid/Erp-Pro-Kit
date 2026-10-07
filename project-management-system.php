@@ -3,7 +3,7 @@
  * Plugin Name:       Project Management System
  * Plugin URI:        https://github.com/orierodavid/Project-management-system
  * Description:       Admin/Staff task and attendance management, built as a native WordPress plugin.
- * Version:           0.6.2
+ * Version:           0.7.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            David Oriero
@@ -19,15 +19,16 @@ if (! defined('ABSPATH')) {
     exit; // No direct access.
 }
 
-define('PMS_VERSION', '0.6.2');
+define('PMS_VERSION', '0.7.0');
 define('PMS_PLUGIN_FILE', __FILE__);
 define('PMS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PMS_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('PMS_DB_VERSION', '1.0.4'); // bump this + update Activator when schema/role changes
+define('PMS_DB_VERSION', '1.0.5'); // bump this + update Activator when schema/role changes
 
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-activator.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-deactivator.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-roles.php';
+require_once PMS_PLUGIN_DIR . 'includes/class-pms-modules.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-constants.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-db.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-user-profile-fields.php';

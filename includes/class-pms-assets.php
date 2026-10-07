@@ -18,7 +18,13 @@ class PMS_Assets
             return;
         }
 
-        wp_enqueue_style('pms-admin', PMS_PLUGIN_URL . 'admin/css/admin.css', [], PMS_VERSION);
+        wp_enqueue_style(
+            'pms-poppins',
+            'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap',
+            [],
+            null
+        );
+        wp_enqueue_style('pms-admin', PMS_PLUGIN_URL . 'admin/css/admin.css', ['pms-poppins'], PMS_VERSION);
         wp_add_inline_style('pms-admin', $this->dynamic_color_css());
 
         wp_enqueue_script('pms-admin', PMS_PLUGIN_URL . 'admin/js/admin.js', ['wp-api-fetch'], PMS_VERSION, true);
@@ -48,7 +54,13 @@ class PMS_Assets
             return;
         }
 
-        wp_enqueue_style('pms-admin', PMS_PLUGIN_URL . 'admin/css/admin.css', ['dashicons'], PMS_VERSION);
+        wp_enqueue_style(
+            'pms-poppins',
+            'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap',
+            [],
+            null
+        );
+        wp_enqueue_style('pms-admin', PMS_PLUGIN_URL . 'admin/css/admin.css', ['dashicons', 'pms-poppins'], PMS_VERSION);
         wp_add_inline_style('pms-admin', $this->dynamic_color_css());
 
         wp_enqueue_script('pms-admin', PMS_PLUGIN_URL . 'admin/js/admin.js', ['wp-api-fetch'], PMS_VERSION, true);

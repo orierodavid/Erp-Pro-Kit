@@ -230,8 +230,8 @@ $tabs = [
                         <label>Issue Date<input class="pms-input" type="date" name="issue_date" value="<?php echo esc_attr($today); ?>" required></label>
                         <label>Due Date<input class="pms-input" type="date" name="due_date" value="<?php echo esc_attr(gmdate('Y-m-d', strtotime('+30 days'))); ?>"></label>
                         <label>Currency<input class="pms-input" name="currency" value="NGN"></label>
-                        <label>VAT Rate (%)<input class="pms-input" type="number" step="0.01" min="0" name="vat_rate" value="7.50"></label>
-                        <label class="pms-invoice-check"><input type="checkbox" name="vat_inclusive" value="1" checked><span><strong>VAT inclusive</strong><small>Keep the line-item total VAT-inclusive and show the VAT portion separately.</small></span></label>
+                        <label>VAT Rate (%)<input class="pms-input" type="number" step="0.01" min="0" name="vat_rate" value="0"></label>
+                        <label class="pms-invoice-check"><input type="checkbox" name="vat_inclusive" value="1"><span><strong>VAT inclusive</strong><small>Keep the line-item total VAT-inclusive and show the VAT portion separately.</small></span></label>
                         <label>Status<select class="pms-input" name="status"><option value="sent">Sent</option><option value="draft">Draft</option></select></label>
                     </div>
                     <?php include __DIR__ . '/invoicing-items.php'; ?>

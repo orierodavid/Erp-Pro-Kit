@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name:       Project Management System
- * Plugin URI:        https://github.com/orierodavid/Project-management-system
- * Description:       Admin/Staff task and attendance management, built as a native WordPress plugin.
+ * Plugin Name:       ERP Pro Kit
+ * Plugin URI:        https://github.com/orierodavid/Erp-Pro-Kit
+ * Description:       A bold, clean ERP workspace for WordPress, bringing business operations into a native frontend-style application.
  * Version:           0.7.0
  * Requires at least: 6.0
  * Requires PHP:      7.4

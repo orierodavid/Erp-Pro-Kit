@@ -72,7 +72,7 @@ class PMS_Admin_Menu
 
     public function render_attendance(): void
     {
-        if (! PMS_Modules::is_active('attendance') || ! current_user_can('pms_view_attendance')) {
+        if (! PMS_Modules::is_active('attendance') || ! current_user_can('pms_clock_in_out')) {
             wp_die(__('You do not have permission to view this page.', 'pms'));
         }
         include PMS_PLUGIN_DIR . 'admin/views/attendance.php';

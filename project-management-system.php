@@ -30,6 +30,7 @@ require_once PMS_PLUGIN_DIR . 'includes/class-pms-deactivator.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-roles.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-modules.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-attendance.php';
+require_once PMS_PLUGIN_DIR . 'includes/class-pms-leave.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-constants.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-db.php';
 require_once PMS_PLUGIN_DIR . 'includes/class-pms-user-profile-fields.php';

@@ -849,3 +849,156 @@ body.pms-fullscreen-app { background: var(--pms-bg); }
     .pms-shell.pms-workspace-admin .pms-dashboard-hero h1{font-size:25px}
     .pms-shell.pms-workspace-admin .pms-dashboard-section-head{padding:16px}
 }
+
+
+/* ===========================================================
+   STAFF DASHBOARD — SUPPLIED REFERENCE IMPLEMENTATION
+   Same application shell as Admin, with the Staff orange
+   workspace treatment. Presentation only: all PHP data,
+   attendance actions, task links and capabilities remain intact.
+   =========================================================== */
+.pms-shell.pms-workspace-staff{
+    --pms-ref-orange:#F59E0B;
+    --pms-ref-orange-dark:#D97706;
+    --pms-ref-orange-soft:#FFF7ED;
+    --pms-bg:#F3F6FC;
+    --pms-surface:#FFFFFF;
+    --pms-text:#1E293B;
+    --pms-heading:#0F172A;
+    --pms-muted:#64748B;
+    --pms-border:#E2E8F0;
+    --pms-success:#10B981;
+    --pms-danger:#EF4444;
+    --pms-sidebar-w:260px;
+    --pms-topbar-h:64px;
+    background:#F3F6FC;
+}
+.pms-shell.pms-workspace-staff .pms-shell-sidebar{
+    top:0;left:0;bottom:0;width:260px;border-radius:0;border:0;box-shadow:none;
+    background:linear-gradient(180deg,#070E20 0%,#0F1A3A 50%,#070D1E 100%);color:#CBD5E1;
+}
+.pms-shell.pms-workspace-staff .pms-shell-brand{height:78px;padding:0 20px;border-bottom:0}
+.pms-shell.pms-workspace-staff .pms-brand-mark{
+    width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#F59E0B,#FBBF24);
+    color:#0F172A;box-shadow:0 8px 20px rgba(245,158,11,.20)
+}
+.pms-shell.pms-workspace-staff .pms-brand-copy strong{color:#fff;font-size:15px}
+.pms-shell.pms-workspace-staff .pms-brand-copy small{color:#94A3B8;font-size:12px}
+.pms-shell.pms-workspace-staff .pms-shell-nav{padding:10px 12px}
+.pms-shell.pms-workspace-staff .pms-nav-label{margin:17px 12px 7px;color:#94A3B8;font-size:11px;letter-spacing:.09em}
+.pms-shell.pms-workspace-staff .pms-nav-label:first-child{margin-top:4px}
+.pms-shell.pms-workspace-staff .pms-nav-item{height:42px;margin:2px 0;padding:0 14px;border-radius:12px;color:#CBD5E1;gap:12px;font-size:14px;font-weight:500}
+.pms-shell.pms-workspace-staff .pms-nav-item .dashicons{color:#94A3B8;font-size:17px;width:20px;height:20px}
+.pms-shell.pms-workspace-staff .pms-nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.pms-shell.pms-workspace-staff .pms-nav-item.is-active{background:linear-gradient(90deg,#F59E0B 0%,#D97706 100%);box-shadow:0 4px 14px rgba(245,158,11,.30);color:#fff}
+.pms-shell.pms-workspace-staff .pms-nav-item.is-active .dashicons{color:#fff}
+.pms-shell.pms-workspace-staff .pms-shell-account{padding:12px;margin-bottom:6px;border-top:0}
+.pms-shell.pms-workspace-staff .pms-back-link{padding:10px 14px;margin-bottom:8px;border-radius:12px;color:#CBD5E1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);font-size:12px;font-weight:600}
+.pms-shell.pms-workspace-staff .pms-back-link:hover{background:rgba(255,255,255,.10);color:#fff}
+.pms-shell.pms-workspace-staff .pms-account-card{padding:8px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05)}
+.pms-shell.pms-workspace-staff .pms-account-copy strong{color:#fff}
+.pms-shell.pms-workspace-staff .pms-account-copy small{color:#94A3B8}
+.pms-shell.pms-workspace-staff .pms-account-arrow{color:#94A3B8}
+.pms-shell.pms-workspace-staff .pms-shell-body{margin-left:260px;padding:0 0 40px;background:#F3F6FC}
+.pms-shell.pms-workspace-staff .pms-shell-topbar{height:64px;margin:0;padding:0 32px;background:rgba(255,255,255,.86);border-bottom:1px solid rgba(226,232,240,.85);backdrop-filter:blur(10px)}
+.pms-shell.pms-workspace-staff .pms-topbar-search{width:100%;max-width:420px;height:38px;display:flex;align-items:center;gap:9px;padding:0 12px 0 14px;border-radius:999px;background:#F1F5F9}
+.pms-shell.pms-workspace-staff .pms-topbar-search .dashicons{color:#94A3B8;font-size:15px}
+.pms-shell.pms-workspace-staff .pms-topbar-search input{flex:1;min-width:0;border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important;color:#334155;font-size:13px}
+.pms-shell.pms-workspace-staff .pms-topbar-search kbd{padding:3px 6px;border:1px solid #E2E8F0;border-radius:6px;background:#fff;color:#94A3B8;font-size:10px;line-height:1}
+.pms-shell.pms-workspace-staff .pms-topbar-spacer{flex:1}
+.pms-shell.pms-workspace-staff .pms-topbar-notification{position:relative;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:#64748B}
+.pms-shell.pms-workspace-staff .pms-topbar-notification:hover{background:#F1F5F9}
+.pms-notification-badge{position:absolute;right:1px;top:1px;display:grid;place-items:center;min-width:15px;height:15px;padding:0 3px;border:2px solid #fff;border-radius:999px;background:#EF4444;color:#fff;font-size:8px;font-weight:800;line-height:1}
+.pms-workspace-pill{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:999px;border:1px solid #E2E8F0;background:#fff;font-size:11px;font-weight:800;white-space:nowrap}
+.pms-workspace-pill-admin{color:#2563EB;background:#EFF6FF;border-color:#DBEAFE}
+.pms-workspace-pill-staff{color:#D97706;background:#FFF7ED;border-color:#FED7AA}
+.pms-workspace-pill .dashicons{font-size:15px;width:15px;height:15px}
+.pms-shell.pms-workspace-staff .pms-topbar-account{display:flex;align-items:center;gap:9px;padding-left:4px;color:#64748B}
+.pms-shell.pms-workspace-staff .pms-topbar-account img{width:32px;height:32px}
+.pms-shell.pms-workspace-staff .pms-topbar-account strong{display:block;color:#0F172A;font-size:12px;line-height:1.2}
+.pms-shell.pms-workspace-staff .pms-topbar-account small{display:block;margin-top:3px;color:#94A3B8;font-size:11px}
+.pms-shell.pms-workspace-staff .pms-shell-main{width:100%;max-width:1200px;margin:0 auto;padding:32px;box-sizing:border-box}
+.pms-shell.pms-workspace-staff .pms-reference-dashboard{display:flex;flex-direction:column;gap:20px}
+.pms-shell.pms-workspace-staff .pms-dashboard-hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:132px;padding:24px 26px;border-radius:16px;border:1px solid rgba(226,232,240,.9);overflow:hidden;background:linear-gradient(90deg,rgba(255,247,237,.80),#fff,rgba(255,251,235,.70));box-shadow:0 1px 2px rgba(15,23,42,.03);box-sizing:border-box}
+.pms-shell.pms-workspace-staff .pms-dashboard-kicker{margin:0 0 4px;color:#94A3B8;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.pms-shell.pms-workspace-staff .pms-dashboard-hero h1{margin:0;color:#0F172A;font-size:30px;font-weight:800;letter-spacing:-.035em;line-height:1.15}
+.pms-shell.pms-workspace-staff .pms-dashboard-hero h1 span{color:#D97706}
+.pms-shell.pms-workspace-staff .pms-dashboard-hero-copy>p:last-child{margin:6px 0 0;color:#64748B;font-size:13px;font-weight:500}
+.pms-shell.pms-workspace-staff .pms-dashboard-date{position:relative;z-index:3;display:flex;align-items:center;gap:8px;flex:none;padding:10px 14px;border:1px solid rgba(226,232,240,.9);border-radius:12px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.03);color:#334155;font-size:12px;font-weight:600}
+.pms-shell.pms-workspace-staff .pms-dashboard-date .dashicons{color:#D97706;font-size:15px}
+.pms-shell.pms-workspace-staff .pms-dashboard-date .dashicons:last-child{color:#94A3B8;font-size:10px}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi{position:relative;display:flex;align-items:center;gap:12px;min-width:0;padding:20px;border:1px solid rgba(226,232,240,.85);border-radius:16px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.03);text-decoration:none;overflow:hidden;transition:box-shadow .15s ease,transform .15s ease}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(15,23,42,.07)}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-icon{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:12px;font-size:18px}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-todo .pms-dashboard-kpi-icon{background:#EFF6FF;color:#2563EB}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-in_progress .pms-dashboard-kpi-icon{background:#ECFDF5;color:#10B981}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-done .pms-dashboard-kpi-icon{background:#F5F3FF;color:#7C3AED}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-copy{display:flex;flex-direction:column;min-width:0}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-copy small{color:#94A3B8;font-size:11px;font-weight:800;letter-spacing:.10em;text-transform:uppercase}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-copy strong{margin-top:2px;color:#0F172A;font-size:25px;font-weight:800;line-height:1.1}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-copy>span{margin-top:5px;color:#94A3B8;font-size:12px;font-weight:500}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-arrow{margin-left:auto;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#F1F5F9;color:#94A3B8;flex:none}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-line{position:absolute;left:0;right:0;bottom:0;height:4px;border-radius:0 0 16px 16px}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-todo .pms-dashboard-kpi-line{background:#3B82F6}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-in_progress .pms-dashboard-kpi-line{background:#10B981}
+.pms-shell.pms-workspace-staff .pms-dashboard-kpi-done .pms-dashboard-kpi-line{background:#8B5CF6}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance{background:#fff;border:1px solid rgba(226,232,240,.85);border-radius:16px;box-shadow:0 1px 2px rgba(15,23,42,.03);overflow:hidden}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance .pms-dashboard-section-head{display:flex;align-items:center;gap:10px;padding:20px 24px;border-bottom:1px solid #F1F5F9}
+.pms-shell.pms-workspace-staff .pms-dashboard-section-head h2{margin:0;color:#0F172A;font-size:16px;font-weight:800}
+.pms-shell.pms-workspace-staff .pms-dashboard-section-head p{margin:3px 0 0;color:#94A3B8;font-size:11px}
+.pms-shell.pms-workspace-staff .pms-dashboard-section-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:11px}
+.pms-shell.pms-workspace-staff .pms-dashboard-section-icon-orange{background:#FFF7ED;color:#D97706}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-date{margin-left:auto;display:flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid #E2E8F0;border-radius:10px;background:#fff;color:#64748B;font-size:11px;font-weight:700}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-stage{display:grid;grid-template-columns:180px minmax(0,1fr) 300px;gap:24px;align-items:center;padding:28px 30px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-status{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:20px;border:1px solid #E2E8F0;border-radius:18px;background:#F8FAFC}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-status>.dashicons{color:#D97706;font-size:19px;width:19px;height:19px;margin-bottom:4px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-status small{color:#94A3B8;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-status strong{color:#0F172A;font-size:18px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-status>span{color:#64748B;font-size:11px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-clock{display:grid;place-items:center}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-clock-ring{width:136px;height:136px;padding:7px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#F59E0B var(--pms-attendance-progress),#E2E8F0 0);box-shadow:0 16px 35px rgba(245,158,11,.15)}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-clock-ring>div{width:100%;height:100%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;border:1px solid #F1F5F9}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-clock-ring strong{color:#0F172A;font-size:25px;font-weight:800;line-height:1}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-clock-ring span{margin-top:7px;color:#94A3B8;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-actions{display:flex;flex-direction:column;gap:10px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-action{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border:1px solid #E2E8F0;border-radius:13px;background:#fff;color:#0F172A;text-align:left;cursor:pointer}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-action>span:first-child{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;color:#fff}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-action.is-clock-in>span:first-child{background:#10B981}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-action.is-clock-out>span:first-child{background:#EF4444}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-action>span:nth-child(2){display:flex;flex-direction:column;flex:1}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-action strong{font-size:12px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-action small{margin-top:2px;color:#94A3B8;font-size:10px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-action>.dashicons:last-child{color:#94A3B8;font-size:15px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-action:disabled{opacity:.48;cursor:default}
+.pms-shell.pms-workspace-staff .pms-attendance-note{color:#D97706;font-size:10px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #F1F5F9;background:#FAFBFD}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta>div{display:flex;align-items:center;gap:11px;padding:16px 24px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta>div+div{border-left:1px solid #F1F5F9}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta>div>.dashicons{color:#D97706;font-size:17px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta span:last-child{display:flex;flex-direction:column}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta small{color:#94A3B8;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta strong{margin-top:3px;color:#334155;font-size:11px}
+.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta em{margin-top:2px;color:#94A3B8;font-size:9px;font-style:normal}
+.pms-shell.pms-workspace-staff .pms-dashboard-recent{background:#fff;border:1px solid rgba(226,232,240,.85);border-radius:16px;box-shadow:0 1px 2px rgba(15,23,42,.03);overflow:hidden}
+.pms-shell.pms-workspace-staff .pms-dashboard-recent-head{display:flex;align-items:center;gap:10px;padding:20px 24px;border-bottom:1px solid #F1F5F9}
+.pms-shell.pms-workspace-staff .pms-dashboard-section-icon-blue{background:#EFF6FF;color:#2563EB}
+.pms-shell.pms-workspace-staff .pms-dashboard-recent-head>a{margin-left:auto;color:#D97706;font-size:12px;font-weight:800;text-decoration:none}
+.pms-shell.pms-workspace-staff .pms-dashboard-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;padding:24px;text-align:center}
+.pms-shell.pms-workspace-staff .pms-dashboard-empty-icon{display:grid;place-items:center;width:88px;height:88px;margin-bottom:16px;border-radius:50%;background:rgba(254,215,170,.55)}
+.pms-shell.pms-workspace-staff .pms-dashboard-empty-icon:before{content:"";display:grid;place-items:center;width:58px;height:58px;border-radius:11px;background:#F59E0B;box-shadow:0 6px 12px rgba(245,158,11,.18)}
+.pms-shell.pms-workspace-staff .pms-dashboard-empty-icon .dashicons{position:absolute;z-index:1;color:#fff;font-size:28px;width:28px;height:28px}
+.pms-shell.pms-workspace-staff .pms-dashboard-empty strong{color:#1E293B;font-size:13px;font-weight:800}
+.pms-shell.pms-workspace-staff .pms-dashboard-empty p{margin:5px 0 0;color:#94A3B8;font-size:12px}
+.pms-shell.pms-workspace-staff .pms-dashboard-task-list{padding:8px 0}
+.pms-shell.pms-workspace-staff .pms-dashboard-task-row{display:flex;align-items:center;gap:12px;padding:13px 24px;color:inherit;text-decoration:none;border-bottom:1px solid #F8FAFC}
+.pms-shell.pms-workspace-staff .pms-dashboard-task-row:hover{background:#F8FAFC}
+.pms-shell.pms-workspace-staff .pms-dashboard-task-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#FFF7ED;color:#D97706}
+.pms-shell.pms-workspace-staff .pms-dashboard-task-copy{display:flex;flex-direction:column;min-width:0;flex:1}
+.pms-shell.pms-workspace-staff .pms-dashboard-task-copy strong{color:#0F172A;font-size:13px}
+.pms-shell.pms-workspace-staff .pms-dashboard-task-copy small{margin-top:3px;color:#94A3B8;font-size:11px}
+.pms-shell.pms-workspace-staff .pms-dashboard-task-row>.dashicons{color:#94A3B8;font-size:15px}
+@media (max-width:1100px){.pms-shell.pms-workspace-staff .pms-shell-main{padding:24px}.pms-shell.pms-workspace-staff .pms-dashboard-attendance-stage{grid-template-columns:160px minmax(0,1fr) 260px}}
+@media (max-width:900px){.pms-shell.pms-workspace-staff .pms-shell-body{margin-left:0}.pms-shell.pms-workspace-staff .pms-shell-sidebar{top:0;left:0;bottom:0;transform:translateX(-110%)}.pms-shell.pms-workspace-staff.pms-nav-open .pms-shell-sidebar{transform:translateX(0)}.pms-shell.pms-workspace-staff .pms-shell-main{padding:20px 16px}.pms-shell.pms-workspace-staff .pms-dashboard-attendance-stage{grid-template-columns:1fr}.pms-shell.pms-workspace-staff .pms-dashboard-attendance-status{align-items:center;text-align:center}.pms-shell.pms-workspace-staff .pms-dashboard-attendance-actions{max-width:440px;width:100%;margin:0 auto}}
+@media (max-width:760px){.pms-shell.pms-workspace-staff .pms-dashboard-kpis{grid-template-columns:1fr}.pms-shell.pms-workspace-staff .pms-dashboard-hero{align-items:flex-start;flex-direction:column}.pms-shell.pms-workspace-staff .pms-dashboard-date{align-self:stretch;justify-content:flex-start}.pms-workspace-pill{display:none}.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta{grid-template-columns:1fr}.pms-shell.pms-workspace-staff .pms-dashboard-attendance-meta>div+div{border-left:0;border-top:1px solid #F1F5F9}}
+@media (max-width:520px){.pms-shell.pms-workspace-staff .pms-shell-topbar{padding:0 16px}.pms-shell.pms-workspace-staff .pms-topbar-account>span:not(.dashicons){display:none}.pms-shell.pms-workspace-staff .pms-shell-main{padding:16px 12px}.pms-shell.pms-workspace-staff .pms-dashboard-hero{padding:20px}.pms-shell.pms-workspace-staff .pms-dashboard-hero h1{font-size:25px}.pms-shell.pms-workspace-staff .pms-dashboard-section-head{padding:16px}}

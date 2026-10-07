@@ -138,7 +138,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
                 <td><?php echo esc_html($request->reason ?: '—'); ?></td>
                 <td><span class="pms-chip pms-status-<?php echo esc_attr($request->status); ?>"><?php echo esc_html(ucfirst($request->status)); ?></span></td>
                 <?php if ($is_manager) : ?><td><?php if ($request->status === 'pending') : ?>
-                    <form method="post" style="display:inline-flex;gap:6px;"><?php wp_nonce_field('pms_leave_manage', 'pms_leave_nonce'); ?><input type="hidden" name="pms_leave_action" value="review"><input type="hidden" name="request_id" value="<?php echo (int) $request->id; ?><button type="submit" name="status" value="approved" class="pms-btn-primary"><?php esc_html_e('Approve', 'pms'); ?></button><button type="submit" name="status" value="rejected" class="pms-btn-secondary"><?php esc_html_e('Reject', 'pms'); ?></button></form>
+                    <form method="post" style="display:inline-flex;gap:6px;"><?php wp_nonce_field('pms_leave_manage', 'pms_leave_nonce'); ?><input type="hidden" name="pms_leave_action" value="review"><input type="hidden" name="request_id" value="<?php echo (int) $request->id; ?>"><button type="submit" name="status" value="approved" class="pms-btn-primary"><?php esc_html_e('Approve', 'pms'); ?></button><button type="submit" name="status" value="rejected" class="pms-btn-secondary"><?php esc_html_e('Reject', 'pms'); ?></button></form>
                 <?php else : ?>—<?php endif; ?></td><?php endif; ?>
             </tr>
         <?php endforeach; ?>

@@ -15,6 +15,7 @@ class PMS_Activator
         dbDelta(PMS_Inventory::schema_sql());
         dbDelta(PMS_Real_Estate::schema_sql());
         dbDelta(PMS_Real_Estate_Automation::schema_sql());
+        PMS_Real_Estate_Automation::activate();
 
         PMS_Roles::register();
         update_option('pms_db_version', PMS_DB_VERSION);

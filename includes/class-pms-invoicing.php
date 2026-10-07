@@ -202,14 +202,19 @@ CREATE TABLE {$payments} (
         return $items;
     }
 
-    private static function totals(array $items, float $tax): array
+    private static function totals(array $items, float $tax, bool $inclusive = false): array
     {
         $subtotal = 0;
         foreach ($items as $item) {
             $subtotal += (float) $item['amount'];
         }
         $tax = max(0, round($tax, 2));
-        return ['subtotal' => round($subtotal, 2), 'tax' => $tax, 'total' => round($subtotal + $tax, 2)];
+        $subtotal = round($subtotal, 2);
+        return [
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'total' => $inclusive ? $subtotal : round($subtotal + $tax, 2),
+        ];
     }
 
     public static function create_quote(array $data, array $items): int

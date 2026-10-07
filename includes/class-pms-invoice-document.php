@@ -199,7 +199,11 @@ class PMS_Invoice_Document
             $c = '';
             self::rect($c, 0, 0, self::PAGE_WIDTH, self::PAGE_HEIGHT, [0.043, 0.086, 0.20], true);
             self::rect($c, 0, 0, self::PAGE_WIDTH, self::PAGE_HEIGHT - 105, [1, 1, 1], true);
-            self::text($c, 42, 790, $company, 18, [1, 1, 1], true);
+            $logo = self::pdf_logo();
+            if ($logo) {
+                self::image($c, 42, 742, 105, 38);
+            }
+            self::text($c, $logo ? 160 : 42, 790, $company, 18, [1, 1, 1], true);
             self::text($c, 42, 770, 'ACCOUNTS & BILLING', 8, [0.72, 0.80, 0.92]);
             $company_line = implode(' | ', array_filter([$profile['phone'], $profile['email'], $profile['website']]));
             if ($profile['address']) { self::text($c, 42, 755, self::truncate($profile['address'], 72), 7, [0.72, 0.80, 0.92]); }
@@ -265,10 +269,44 @@ class PMS_Invoice_Document
             $pages[] = $c;
         }
 
-        return self::assemble($pages);
+        return self::assemble($pages, $logo);
     }
 
-    private static function assemble(array $contents): string
+    private static function pdf_logo(): ?array
+    {
+        $id = absint(get_option('pms_company_logo_id', 0));
+        if (! $id) { return null; }
+        $path = get_attached_file($id);
+        if (! $path || ! file_exists($path)) { return null; }
+        $type = wp_check_filetype($path)['type'] ?? '';
+        if ($type === 'image/jpeg' || $type === 'image/jpg') {
+            $data = file_get_contents($path);
+        } elseif ($type === 'image/png' && function_exists('imagecreatefrompng') && function_exists('imagejpeg')) {
+            $source = @imagecreatefrompng($path);
+            if (! $source) { return null; }
+            $width = imagesx($source); $height = imagesy($source);
+            $canvas = imagecreatetruecolor($width, $height);
+            $white = imagecolorallocate($canvas, 255, 255, 255);
+            imagefill($canvas, 0, 0, $white);
+            imagealphablending($canvas, true);
+            imagecopy($canvas, $source, 0, 0, 0, 0, $width, $height);
+            ob_start(); imagejpeg($canvas, null, 90); $data = ob_get_clean();
+            imagedestroy($source); imagedestroy($canvas);
+        } else {
+            return null;
+        }
+        if (! $data) { return null; }
+        $size = @getimagesize($path);
+        if (! $size || empty($size[0]) || empty($size[1])) { return null; }
+        return ['data' => $data, 'width' => (int) $size[0], 'height' => (int) $size[1]];
+    }
+
+    private static function image(string &$c, float $x, float $y, float $w, float $h): void
+    {
+        $c .= sprintf("q %.2f 0 0 %.2f %.2f %.2f cm /Im1 Do Q\\n", $w, $h, $x, $y);
+    }
+
+    private static function assemble(array $contents, ?array $image = null): string
     {
         $objects = [];
         $objects[] = '<< /Type /Catalog /Pages 2 0 R >>';
@@ -282,12 +320,18 @@ class PMS_Invoice_Document
         foreach ($contents as $content) {
             $page_obj = count($objects) + 1;
             $content_obj = $page_obj + 1;
-            $objects[] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ' . ($page_count * 2 + 3) . ' 0 R >> >> /Contents ' . $content_obj . ' 0 R >>';
+            $font_obj_ref = $page_count * 2 + 3;
+            $image_obj_ref = $image ? $font_obj_ref + 1 : 0;
+            $xobject = $image ? ' /XObject << /Im1 ' . $image_obj_ref . ' 0 R >>' : '';
+            $objects[] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ' . $font_obj_ref . ' 0 R >>' . $xobject . ' >> /Contents ' . $content_obj . ' 0 R >>';
             $objects[] = '<< /Length ' . strlen($content) . ' >>\nstream\n' . $content . '\nendstream';
         }
 
         $font_obj = count($objects) + 1;
         $objects[] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
+        if ($image) {
+            $objects[] = '<< /Type /XObject /Subtype /Image /Width ' . $image['width'] . ' /Height ' . $image['height'] . ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' . strlen($image['data']) . ' >>\\nstream\\n' . $image['data'] . '\\nendstream';
+        }
 
         $pdf = "%PDF-1.4\n";
         $offsets = [0];

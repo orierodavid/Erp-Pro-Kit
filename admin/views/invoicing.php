@@ -120,6 +120,7 @@ $tabs = [
     'reports' => ['Invoice Reports', 'dashicons-chart-bar'],
 ];
 ?>
+<?php include PMS_PLUGIN_DIR . 'admin/views/partials/header.php'; ?>
 <div class="pms-invoicing">
     <div class="pms-page-header pms-payroll-header">
         <div>
@@ -322,3 +323,5 @@ $tabs = [
     sync();
 })();
 </script>
+
+<?php include PMS_PLUGIN_DIR . 'admin/views/partials/footer.php'; ?>

@@ -216,10 +216,31 @@
     function initMobileShell() {
         var toggle = document.querySelector('.pms-mobile-menu-toggle');
         var shell = document.querySelector('.pms-shell');
-        if (!toggle || !shell) return;
-        toggle.addEventListener('click', function () {
-            var open = shell.classList.toggle('pms-nav-open');
+        var sidebar = document.querySelector('.pms-shell-sidebar');
+        if (!toggle || !shell || !sidebar) return;
+
+        function setOpen(open) {
+            shell.classList.toggle('pms-nav-open', open);
+            sidebar.classList.toggle('is-open', open);
             toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+        }
+
+        toggle.addEventListener('click', function () {
+            setOpen(!sidebar.classList.contains('is-open'));
+        });
+
+        sidebar.addEventListener('click', function (event) {
+            if (event.target.closest('a')) {
+                setOpen(false);
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                setOpen(false);
+                toggle.focus();
+            }
         });
     }
 

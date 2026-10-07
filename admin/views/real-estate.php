@@ -64,7 +64,7 @@ $commissions=PMS_Real_Estate::commissions();
 $agents=PMS_Roles::get_pms_people();
 
 function pms_re_tabs(string $active): void {
-    $tabs=['overview'=>['Overview','dashicons-dashboard'],'properties'=>['Properties','dashicons-building'],'listings'=>['Listings','dashicons-admin-home'],'contacts'=>['Buyers & Tenants','dashicons-groups'],'transactions'=>['Viewings & Transactions','dashicons-calendar-alt'],'leases'=>['Rentals & Leases','dashicons-media-document'],'commissions'=>['Commissions','dashicons-money-alt'],'reports'=>['Property Reports','dashicons-chart-bar']];
+    $tabs=['overview'=>['Overview','dashicons-dashboard'],'properties'=>['Properties','dashicons-building'],'listings'=>['Listings','dashicons-admin-home'],'contacts'=>['Buyers & Tenants','dashicons-groups'],'transactions'=>['Viewings & Transactions','dashicons-calendar-alt'],'leases'=>['Rentals & Leases','dashicons-media-document'],'commissions'=>['Commissions','dashicons-money-alt'],'communications'=>['Communication','dashicons-email-alt'],'reports'=>['Property Reports','dashicons-chart-bar']];
     foreach($tabs as $slug=>$meta) {
         printf('<a class="%s" href="%s"><span class="dashicons %s"></span>%s</a>',
             $active===$slug?'is-active':'',

@@ -291,7 +291,7 @@ class PMS_Settings
     public function field_primary_color(): void
     {
         printf(
-            '<input type="text" class="pms-color-picker" name="pms_primary_color" value="%s" data-default-color="#e91e63">',
+            '<input type="text" class="pms-color-picker" name="pms_primary_color" value="%s" data-default-color="#2563eb">',
             esc_attr(get_option('pms_primary_color', '#2563eb'))
         );
     }

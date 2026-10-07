@@ -110,6 +110,29 @@ class PMS_CSV_Export
         exit;
     }
 
+    public function export_attendance_report(): void
+    {
+        if (! current_user_can('pms_clock_in_out')) {
+            wp_die(__('You do not have permission to do this.', 'pms'));
+        }
+        check_admin_referer('pms_export_attendance_report_action');
+        $rows = current_user_can('pms_view_all_attendance')
+            ? PMS_Attendance::recent(1000)
+            : PMS_Attendance::recent_for_user(get_current_user_id(), 1000);
+        nocache_headers();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="attendance-report.csv"');
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        fputcsv($out, [__('Employee', 'pms'), __('Clock in', 'pms'), __('Clock out', 'pms'), __('Duration (minutes)', 'pms'), __('Status', 'pms')]);
+        foreach ($rows as $row) {
+            $duration = PMS_Attendance::duration_minutes($row);
+            fputcsv($out, [get_the_author_meta('display_name', (int) $row->user_id), $row->clock_in ?: '', $row->clock_out ?: '', $duration === null ? '' : $duration, $row->status]);
+        }
+        fclose($out);
+        exit;
+    }
+
     public function export_leave_report(): void
     {
         if (! current_user_can('pms_request_leave') && ! current_user_can('pms_manage_leave')) {

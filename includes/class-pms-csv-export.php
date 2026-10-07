@@ -17,6 +17,9 @@ class PMS_CSV_Export
     {
         add_action('admin_post_pms_export_task_report', [$this, 'export_task_report']);
         add_action('admin_post_pms_export_leave_report', [$this, 'export_leave_report']);
+        add_action('admin_post_pms_export_people_report', [$this, 'export_people_report']);
+        add_action('admin_post_pms_export_attendance_report', [$this, 'export_attendance_report']);
+        add_action('admin_post_pms_export_tasks_report', [$this, 'export_tasks_report']);
     }
 
     public function export_task_report(): void

@@ -60,7 +60,10 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
         <?php foreach ($people as $person) :
             $open_tasks = PMS_DB::open_task_count_for_user($person->ID);
             $last_activity = PMS_DB::last_task_activity_for_user($person->ID);
-            $working_now = PMS_DB::has_task_in_progress($person->ID);
+            $attendance_today = PMS_Modules::is_active('attendance') ? PMS_Attendance::today_for_user($person->ID) : null;
+            $working_now = $attendance_today ? $attendance_today->status === 'clocked_in' : PMS_DB::has_task_in_progress($person->ID);
+            $person_role = ! empty($person->roles) ? reset($person->roles) : '';
+            $person_role_label = $person_role ? PMS_Roles::role_label($person_role) : __('No role', 'pms');
             $designation = PMS_User_Profile_Fields::designation($person->ID);
             ?>
             <tr>
@@ -77,7 +80,7 @@ include PMS_PLUGIN_DIR . 'admin/views/partials/header.php';
                 <td><?php echo esc_html(PMS_User_Profile_Fields::department_name($person->ID)); ?></td>
                 <td>
                     <span class="pms-chip <?php echo PMS_Roles::user_is_pms_admin($person) ? 'pms-role-admin' : 'pms-role-staff'; ?>">
-                        <?php echo esc_html(PMS_Roles::user_is_pms_admin($person) ? __('Admin', 'pms') : __('Staff', 'pms')); ?>
+                        <?php echo esc_html($person_role_label); ?>
                     </span>
                 </td>
                 <td><?php echo esc_html($open_tasks); ?></td>

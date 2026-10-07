@@ -256,6 +256,54 @@
         });
     }
 
+
+    
+    function initGlobalNavigationSearch() {
+        var input = document.querySelector('[data-pms-global-search]');
+        if (!input) return;
+
+        var navItems = Array.prototype.slice.call(document.querySelectorAll('[data-pms-nav-label]'));
+        var shell = document.querySelector('.pms-shell');
+
+        function goToMatch() {
+            var query = input.value.trim().toLowerCase();
+            if (!query) return;
+
+            var match = navItems.find(function (item) {
+                return item.dataset.pmsNavLabel.indexOf(query) !== -1;
+            });
+
+            if (match) {
+                window.location.href = match.href;
+            }
+        }
+
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                goToMatch();
+            }
+
+            if (event.key === 'Escape') {
+                input.value = '';
+                input.blur();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+                event.preventDefault();
+                input.focus();
+                input.select();
+            }
+        });
+
+        if (shell) {
+            shell.addEventListener('click', function (event) {
+                if (event.target.closest('.pms-topbar-search')) return;
+            });
+        }
+    }
+
     onReady(function () {
         initWorkModeToggle();
         initAddressVerification();
@@ -263,5 +311,6 @@
         initAttendanceButtons();
         initMobileShell();
         initPeopleSearch();
+        initGlobalNavigationSearch();
     });
 })();

@@ -140,6 +140,9 @@ class PMS_Roles
     {
         remove_role(self::ADMIN_ROLE);
         remove_role(self::STAFF_ROLE);
+        foreach (array_keys(self::erp_roles()) as $role_slug) {
+            remove_role($role_slug);
+        }
 
         $role = get_role('administrator');
         if ($role) {
@@ -187,8 +190,11 @@ class PMS_Roles
     public static function get_pms_people(): array
     {
         return get_users([
-            'capability__in' => ['pms_manage_tasks', 'pms_view_assigned_tasks'],
-            'orderby'        => 'display_name',
+            'role__in' => array_merge(
+                ['administrator', self::ADMIN_ROLE, self::STAFF_ROLE],
+                array_keys(self::erp_roles())
+            ),
+            'orderby' => 'display_name',
         ]);
     }
 }
